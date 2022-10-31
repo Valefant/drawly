@@ -1,0 +1,78 @@
+'use client';
+
+import Image from 'next/image';
+import bgImage from '../public/tile_background.png';
+import { useDebounce } from 'usehooks-ts';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Select from 'react-select';
+
+function useSuggestions(searchTerm: string): {
+  suggestions: string[];
+  isLoading: boolean;
+} {
+  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+
+  useEffect(() => {
+    setIsLoading(true);
+    fetchSuggestions(searchTerm)
+      .then((suggestions) => setSuggestions(suggestions))
+      .finally(() => setIsLoading(false));
+  }, [searchTerm]);
+
+  return { suggestions, isLoading };
+}
+
+async function fetchSuggestions(searchTerm: string): Promise<string[]> {
+  const response = await fetch(`api/suggestions?term=${searchTerm}`);
+  return await response.json();
+}
+
+export default function Home() {
+  const router = useRouter();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [selectedOption, setSelectedOption] = useState('');
+  const debouncedSearchTerm = useDebounce(searchTerm, 250);
+  const { suggestions, isLoading } = useSuggestions(debouncedSearchTerm);
+  const suggestionOptions = suggestions.map((e) => ({ label: e, value: e }));
+
+  return (
+    <div className="relative h-screen">
+      <Image src={bgImage} alt="background" className="absolute h-full" />
+      <div className="relative flex flex-col items-center justify-center h-full space-y-8">
+        <h1 className="text-5xl font-bold">Drawly</h1>
+        <div className="w-96">
+          <Select
+            name="suggestions"
+            isLoading={isLoading}
+            options={suggestionOptions}
+            classNamePrefix="select"
+            onInputChange={(input) => {
+              setSearchTerm(input);
+            }}
+            onChange={(option) => {
+              setSelectedOption(option?.value ?? '');
+            }}
+            placeholder={'Type for suggestions...'}
+            noOptionsMessage={() =>
+              'We could not find any related images for your search'
+            }
+          />
+        </div>
+        <button
+          className="disabled:opacity-50 hover:bg-slate-200 px-4 py-2"
+          disabled={selectedOption === ''}
+          onClick={() => {
+            router.push(`draw/${selectedOption}`);
+          }}
+        >
+          Start
+        </button>
+        <a className="underline opacity-50" href="https://www.pexels.com">
+          Photos provided by Pexels
+        </a>
+      </div>
+    </div>
+  );
+}
