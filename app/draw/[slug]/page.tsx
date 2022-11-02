@@ -7,6 +7,10 @@ async function getData(key: string): Promise<Photo[]> {
     query: key as string,
   })) as PhotosWithTotalResults;
 
+  if (response.photos.length === 0) {
+    throw Error('Images are empty');
+  }
+
   return response.photos;
 }
 
