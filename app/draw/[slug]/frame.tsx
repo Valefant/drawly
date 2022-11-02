@@ -10,6 +10,7 @@ import { Photo } from 'pexels';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import useWebAnimations from '@wellyshen/use-web-animations';
 import { playfulButtonDesign } from '../../../components/design';
+import Attribution from '../../../components/attribution';
 
 export function Frame({ photos }: { photos: Photo[] }) {
   const [currentStep, { goToNextStep }] = useStep(10);
@@ -50,16 +51,15 @@ export function Frame({ photos }: { photos: Photo[] }) {
         <div className="absolute inset-0 z-10 bg-white opacity-0" ref={ref} />
         <img alt={photo.alt as string} src={photo.src.large} />
       </picture>
-      <div className="flex opacity-50">
-        <a className="underline" href={photo.src.original}>
-          Photo
-        </a>
-        <span>&nbsp;by&nbsp;</span>
-        <a className="underline" href={photo.photographer_url}>
-          {photo.photographer}
-        </a>
-        <span>&nbsp;on Pexels</span>
-      </div>
+      <Attribution
+        className="flex opacity-50"
+        imageUrl={photo.src.original}
+        author={{
+          name: photo.photographer,
+          profileUrl: photo.photographer_url,
+        }}
+        platform="Pexels"
+      />
       <div className="flex items-center space-x-8">
         <div className="flex flex-col">
           <button {...playfulButtonDesign} onClick={() => toggleTimer()}>
