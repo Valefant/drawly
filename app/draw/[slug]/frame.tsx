@@ -31,7 +31,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
   useEventListener('keydown', (e) => {
     const key = e.code;
 
-    if (key === 'Space') {
+    if (key === 'KeyP') {
       toggleTimer();
     }
 
