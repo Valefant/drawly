@@ -16,6 +16,10 @@ function useSuggestions(searchTerm: string): {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   useEffect(() => {
+    if (searchTerm === '') {
+      return;
+    }
+
     setIsLoading(true);
     fetchSuggestions(searchTerm)
       .then((suggestions) => setSuggestions(suggestions))
