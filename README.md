@@ -44,4 +44,6 @@ Images provided by [Pexels](https://www.pexels.com)
 
 ### Resources
 
-Background tiles on the starting page were generated with [patternico](https://patternico.com)
+- Background tiles on the starting page were generated with [patternico](https://patternico.com)
+- Project Font is [Gloria Hallelujah](https://fonts.google.com/specimen/Gloria+Hallelujah?vfquery=glor&query=gloria)
+  designed by [Kimberly Geswein](https://fonts.google.com/?query=Kimberly+Geswein)
