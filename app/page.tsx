@@ -68,7 +68,11 @@ export default function Home() {
               }
             />
           )}
-          {startDrawingSession && 'Starting drawing session...'}
+          {startDrawingSession && (
+            <div className="flex justify-center">
+              Starting drawing session...
+            </div>
+          )}
         </div>
         <button
           {...playfulButtonDesign}
