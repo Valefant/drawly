@@ -1,7 +1,11 @@
 'use client';
 
 import { useBoolean, useEventListener, useStep } from 'usehooks-ts';
-import { ChevronRightIcon } from '@heroicons/react/24/solid';
+import {
+  ChevronRightIcon,
+  PlayIcon,
+  PauseIcon,
+} from '@heroicons/react/24/solid';
 import { Photo } from 'pexels';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import useWebAnimations from '@wellyshen/use-web-animations';
@@ -57,6 +61,11 @@ export function Frame({ photos }: { photos: Photo[] }) {
         <span>&nbsp;on Pexels</span>
       </div>
       <div className="flex items-center space-x-8">
+        <div className="flex flex-col">
+          <button {...playfulButtonDesign} onClick={() => toggleTimer()}>
+            {isPlaying ? <PauseIcon width="24" /> : <PlayIcon width="24" />}
+          </button>
+        </div>
         <CountdownCircleTimer
           duration={60}
           isPlaying={isPlaying}
@@ -73,7 +82,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
         <div className="space-y-2">
           <button {...playfulButtonDesign} onClick={() => goToNextStep()}>
             <span className="text-2xl">Next</span>
-            <ChevronRightIcon className="w-8 h-8" />
+            <ChevronRightIcon className="w-6" />
           </button>
 
           <div className="ml-4 text-lg">
