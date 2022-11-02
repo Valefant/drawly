@@ -36,6 +36,7 @@ export default function Home() {
   const debouncedSearchTerm = useDebounce(searchTerm, 250);
   const { suggestions, isLoading } = useSuggestions(debouncedSearchTerm);
   const suggestionOptions = suggestions.map((e) => ({ label: e, value: e }));
+  const [startDrawingSession, setStartDrawingSession] = useState(false);
 
   return (
     <div className="relative h-screen">
@@ -43,28 +44,32 @@ export default function Home() {
       <div className="relative flex flex-col items-center justify-center h-full space-y-8">
         <h1 className="text-5xl font-bold">Drawly</h1>
         <div className="w-96">
-          <Select
-            name="suggestions"
-            isLoading={isLoading}
-            options={suggestionOptions}
-            classNamePrefix="select"
-            onInputChange={(input) => {
-              setSearchTerm(input);
-            }}
-            onChange={(option) => {
-              setSelectedOption(option?.value ?? '');
-            }}
-            placeholder={'Type for suggestions...'}
-            noOptionsMessage={() =>
-              'We could not find any related images for your search'
-            }
-          />
+          {!startDrawingSession && (
+            <Select
+              name="suggestions"
+              isLoading={isLoading}
+              options={suggestionOptions}
+              classNamePrefix="select"
+              onInputChange={(input) => {
+                setSearchTerm(input);
+              }}
+              onChange={(option) => {
+                setSelectedOption(option?.value ?? '');
+              }}
+              placeholder={'Type for suggestions...'}
+              noOptionsMessage={() =>
+                'We could not find any related images for your search'
+              }
+            />
+          )}
+          {startDrawingSession && 'Starting drawing session...'}
         </div>
         <button
           className="disabled:opacity-50 hover:bg-slate-200 px-4 py-2"
           disabled={selectedOption === ''}
-          onClick={() => {
-            router.push(`draw/${selectedOption}`);
+          onClick={async () => {
+            setStartDrawingSession(true);
+            await router.push(`draw/${selectedOption}`);
           }}
         >
           Start
