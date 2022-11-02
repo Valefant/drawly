@@ -5,6 +5,7 @@ import { ChevronRightIcon } from '@heroicons/react/24/solid';
 import { Photo } from 'pexels';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import useWebAnimations from '@wellyshen/use-web-animations';
+import { playfulButtonDesign } from '../../../components/design';
 
 export function Frame({ photos }: { photos: Photo[] }) {
   const [currentStep, { goToNextStep }] = useStep(10);
@@ -70,10 +71,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
           )}
         </CountdownCircleTimer>
         <div className="space-y-2">
-          <button
-            onClick={() => goToNextStep()}
-            className="hover:bg-slate-200 flex items-center px-4 py-2"
-          >
+          <button {...playfulButtonDesign} onClick={() => goToNextStep()}>
             <span className="text-2xl">Next</span>
             <ChevronRightIcon className="w-8 h-8" />
           </button>

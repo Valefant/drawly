@@ -6,6 +6,7 @@ import { useDebounce } from 'usehooks-ts';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Select from 'react-select';
+import { playfulButtonDesign } from '../components/design';
 
 function useSuggestions(searchTerm: string): {
   suggestions: string[];
@@ -66,7 +67,7 @@ export default function Home() {
           {startDrawingSession && 'Starting drawing session...'}
         </div>
         <button
-          className="disabled:opacity-50 hover:bg-slate-200 px-4 py-2"
+          {...playfulButtonDesign}
           disabled={selectedOption === ''}
           onClick={async () => {
             setStartDrawingSession(true);
