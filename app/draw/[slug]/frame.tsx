@@ -4,11 +4,24 @@ import { useBoolean, useEventListener, useStep } from 'usehooks-ts';
 import { ChevronRightIcon } from '@heroicons/react/24/solid';
 import { Photo } from 'pexels';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import useWebAnimations from '@wellyshen/use-web-animations';
 
 export function Frame({ photos }: { photos: Photo[] }) {
   const [currentStep, { goToNextStep }] = useStep(10);
   const { value: isPlaying, toggle: toggleTimer } = useBoolean(true);
   const photo = photos[currentStep];
+
+  const { ref, getAnimation } = useWebAnimations<HTMLDivElement>({
+    keyframes: { opacity: [1, 0] },
+    animationOptions: {
+      duration: 1000,
+    },
+  });
+
+  const nextImage = () => {
+    goToNextStep();
+    getAnimation()?.play();
+  };
 
   useEventListener('keydown', (e) => {
     const key = e.code;
@@ -18,7 +31,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
     }
 
     if (key === 'Enter') {
-      goToNextStep();
+      nextImage();
 
       if (!isPlaying) {
         toggleTimer();
@@ -28,7 +41,8 @@ export function Frame({ photos }: { photos: Photo[] }) {
 
   return (
     <div className="flex flex-col items-center justify-center h-screen space-y-8">
-      <picture>
+      <picture className="relative">
+        <div className="absolute inset-0 z-10 bg-white opacity-0" ref={ref} />
         <img alt={photo.alt as string} src={photo.src.large} />
       </picture>
       <div className="flex opacity-50">
@@ -47,7 +61,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
           isPlaying={isPlaying}
           key={currentStep}
           colors={'#000000'}
-          onComplete={() => goToNextStep()}
+          onComplete={() => nextImage()}
         >
           {({ remainingTime }) => (
             <button className="text-4xl" onClick={toggleTimer}>
