@@ -30,7 +30,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
       toggleTimer();
     }
 
-    if (key === 'Enter') {
+    if (key === 'Enter' || key === 'NumpadEnter') {
       nextImage();
 
       if (!isPlaying) {

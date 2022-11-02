@@ -57,6 +57,7 @@ export default function Home() {
                 setSelectedOption(option?.value ?? '');
               }}
               placeholder={'Type for suggestions...'}
+              isClearable={true}
               noOptionsMessage={() =>
                 'We could not find any related images for your search'
               }
