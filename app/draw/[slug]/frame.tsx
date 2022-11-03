@@ -39,6 +39,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
     if (key === 'Enter' || key === 'NumpadEnter') {
       nextImage();
 
+      // when paused, start the timer again when showing the next image
       if (!isPlaying) {
         toggleTimer();
       }
@@ -80,7 +81,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
           )}
         </CountdownCircleTimer>
         <div className="space-y-2">
-          <button {...playfulButtonDesign} onClick={() => goToNextStep()}>
+          <button {...playfulButtonDesign} onClick={() => nextImage()}>
             <span className="text-2xl">Next</span>
             <ChevronRightIcon className="w-6" />
           </button>
