@@ -45,10 +45,18 @@ export default function Home() {
 
   return (
     <div className="relative h-screen">
-      <Image src={bgImage} alt="background" className="absolute h-full" />
+      <Image
+        src={bgImage}
+        alt="background"
+        className="absolute h-full"
+        style={{
+          objectFit: 'cover',
+        }}
+        quality={100}
+      />
       <div className="relative flex flex-col items-center justify-center h-full space-y-8">
         <h1 className="text-5xl font-bold">Drawly</h1>
-        <div className="w-96">
+        <div className="w-[22rem]">
           {!startDrawingSession && (
             <Select
               name="suggestions"

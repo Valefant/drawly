@@ -66,7 +66,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
   });
 
   return (
-    <div className="flex flex-col items-center justify-center h-screen space-y-8">
+    <div className="md:space-y-8 flex flex-col items-center justify-center h-screen space-y-4">
       <picture
         className="relative z-10"
         style={{
@@ -86,7 +86,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
         }}
         platform="Pexels"
       />
-      <div className="flex items-center space-x-8">
+      <div className="md:scale-100 sm:scale-75 md:space-x-8 flex items-center space-x-6 scale-50">
         <div className="flex flex-col">
           <button {...playfulButtonDesign} onClick={() => toggleTimer()}>
             {isPlaying ? <PauseIcon width="24" /> : <PlayIcon width="24" />}
