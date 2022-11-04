@@ -88,7 +88,11 @@ export function Frame({ photos }: { photos: Photo[] }) {
       />
       <div className="md:scale-100 sm:scale-75 md:space-x-8 flex items-center space-x-6 scale-50">
         <div className="flex flex-col">
-          <button {...playfulButtonDesign} onClick={() => toggleTimer()}>
+          <button
+            {...playfulButtonDesign}
+            onClick={() => toggleTimer()}
+            title={`${isPlaying ? 'Pause' : 'Play'} (p)`}
+          >
             {isPlaying ? <PauseIcon width="24" /> : <PlayIcon width="24" />}
           </button>
         </div>
@@ -107,16 +111,30 @@ export function Frame({ photos }: { photos: Photo[] }) {
         </CountdownCircleTimer>
         <div className="flex flex-col space-y-2">
           <div className="flex justify-center space-x-2">
-            <button {...playfulButtonDesign} onClick={() => rotate()}>
-              (r) rotate
+            <button
+              {...playfulButtonDesign}
+              onClick={() => rotate()}
+              title="Rotate (r)"
+            >
+              rotate
             </button>
-            <button {...playfulButtonDesign} onClick={() => toggleFlip()}>
-              (f) flip
+            <button
+              {...playfulButtonDesign}
+              onClick={() => toggleFlip()}
+              title="Flip (f)"
+            >
+              flip
             </button>
           </div>
         </div>
         <div className="space-y-2">
-          <button {...playfulButtonDesign} onClick={() => nextImage()}>
+          <button
+            {...playfulButtonDesign}
+            onClick={() => {
+              nextImage();
+            }}
+            title="Next (enter)"
+          >
             <span className="text-2xl">Next</span>
             <ChevronRightIcon className="w-6" />
           </button>
