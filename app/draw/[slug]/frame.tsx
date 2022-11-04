@@ -70,7 +70,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
       <picture
         className="relative z-10"
         style={{
-          transition: 'transform 0.35s',
+          transition: 'transform 0.3s',
           transform: `rotate(${rotation}deg) scaleX(${flipped ? -1 : 1})`,
         }}
       >
