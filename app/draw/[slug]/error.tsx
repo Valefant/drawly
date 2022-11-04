@@ -1,9 +1,9 @@
 'use client';
 
-import { playfulButtonDesign } from '../../../components/design';
 import Link from 'next/link';
 import Image from 'next/image';
 import Attribution from '../../../components/attribution';
+import { playfulButton } from '../../../components/design';
 
 const imageWidth = 690;
 const imageHeight = 480;
@@ -38,7 +38,7 @@ export default function Error({
         You probably are as shocked as this cat right now, but do not fear my
         friend
       </p>
-      <Link {...playfulButtonDesign} href="/">
+      <Link className={playfulButton()} href="/">
         Let{"'"}s get back home
       </Link>
     </div>
