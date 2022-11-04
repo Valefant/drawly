@@ -1,3 +1,9 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    .border-form-playful {
+        border-radius: 255px 15px 225px 15px/15px 225px 15px 255px
+    }
+}

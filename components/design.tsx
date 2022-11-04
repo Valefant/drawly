@@ -1,8 +1,22 @@
-export const playfulButtonDesign = {
-  className:
-    'flex justify-center focus:outline-none focus:border-slate-600 hover:bg-black hover:text-white px-4 py-2 text-black bg-transparent disabled:opacity-50 disabled:border-none hover:disabled:text-black hover:disabled:bg-transparent border-[3px] border-black',
-  style: {
-    borderRadius: '255px 15px 225px 15px/15px 225px 15px 255px',
-    boxShadow: '20px 38px 34px -26px hsla(0,0%,0%,.2)',
-  },
-};
+import { cva } from 'class-variance-authority';
+
+export const playfulButton = cva(
+  ['border-black', 'border-[3px]', 'border-form-playful'],
+  {
+    variants: {
+      intent: {
+        primary: 'bg-transparent text-black hover:bg-black hover:text-white',
+        active: 'bg-black text-white',
+        disabled: 'border-transparent opacity-50',
+      },
+      size: {
+        small: 'text-sm py-1 px-2',
+        medium: 'text-base py-2 px-4',
+      },
+    },
+    defaultVariants: {
+      intent: 'primary',
+      size: 'medium',
+    },
+  }
+);

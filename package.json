@@ -13,6 +13,7 @@
     "@heroicons/react": "^2.0.12",
     "@next/font": "^13.0.0",
     "@wellyshen/use-web-animations": "^0.9.1",
+    "class-variance-authority": "^0.2.4",
     "next": "13.0.0",
     "pexels": "^1.4.0",
     "react": "18.2.0",

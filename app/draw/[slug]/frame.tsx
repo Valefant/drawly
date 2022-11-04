@@ -9,9 +9,9 @@ import {
 import { Photo } from 'pexels';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import useWebAnimations from '@wellyshen/use-web-animations';
-import { playfulButtonDesign } from '../../../components/design';
 import Attribution from '../../../components/attribution';
 import { useState } from 'react';
+import { playfulButton } from '../../../components/design';
 
 function useRotation() {
   const [rotation, setRotation] = useState(0);
@@ -21,12 +21,21 @@ function useRotation() {
   return { rotation, rotate };
 }
 
-export function Frame({ photos }: { photos: Photo[] }) {
-  const [currentStep, { goToNextStep }] = useStep(10);
+export function Frame({
+  duration,
+  photos,
+}: {
+  duration: number;
+  photos: Photo[];
+}) {
+  const [currentStep, { goToNextStep }] = useStep(photos.length);
   const { value: isPlaying, toggle: toggleTimer } = useBoolean(true);
   const { value: flipped, toggle: toggleFlip } = useBoolean(false);
   const { rotation, rotate } = useRotation();
-  const photo = photos[currentStep];
+  // step starts by 1
+  const index = currentStep - 1;
+  const photo = photos[index];
+  const buttonClasses = playfulButton();
 
   const { ref, getAnimation } = useWebAnimations<HTMLDivElement>({
     keyframes: { opacity: [1, 0] },
@@ -89,7 +98,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
       <div className="md:scale-100 sm:scale-75 md:space-x-8 flex items-center space-x-6 scale-50">
         <div className="flex flex-col">
           <button
-            {...playfulButtonDesign}
+            className={buttonClasses}
             onClick={() => toggleTimer()}
             title={`${isPlaying ? 'Pause' : 'Play'} (p)`}
           >
@@ -97,7 +106,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
           </button>
         </div>
         <CountdownCircleTimer
-          duration={60}
+          duration={duration * 60}
           isPlaying={isPlaying}
           key={currentStep}
           colors={'#000000'}
@@ -112,14 +121,14 @@ export function Frame({ photos }: { photos: Photo[] }) {
         <div className="flex flex-col space-y-2">
           <div className="flex justify-center space-x-2">
             <button
-              {...playfulButtonDesign}
+              className={buttonClasses}
               onClick={() => rotate()}
               title="Rotate (r)"
             >
               rotate
             </button>
             <button
-              {...playfulButtonDesign}
+              className={buttonClasses}
               onClick={() => toggleFlip()}
               title="Flip (f)"
             >
@@ -130,7 +139,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
         </div>
         <div className="space-y-2">
           <button
-            {...playfulButtonDesign}
+            className={`flex ${buttonClasses}`}
             onClick={() => {
               nextImage();
             }}
@@ -141,7 +150,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
           </button>
 
           <div className="ml-4 text-lg">
-            <span className="font-bold">{currentStep}</span> / 10
+            <span className="font-bold">{currentStep}</span> / {photos.length}
           </div>
         </div>
       </div>

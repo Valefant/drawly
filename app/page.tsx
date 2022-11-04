@@ -6,7 +6,7 @@ import { useDebounce } from 'usehooks-ts';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Select from 'react-select';
-import { playfulButtonDesign } from '../components/design';
+import { playfulButton } from '../components/design';
 
 function useSuggestions(searchTerm: string): {
   suggestions: string[];
@@ -34,6 +34,9 @@ async function fetchSuggestions(searchTerm: string): Promise<string[]> {
   return await response.json();
 }
 
+const imageCountOptions = [5, 10, 15];
+const timerDurationOptions = [1, 3, 5];
+
 export default function Home() {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
@@ -42,6 +45,10 @@ export default function Home() {
   const { suggestions, isLoading } = useSuggestions(debouncedSearchTerm);
   const suggestionOptions = suggestions.map((e) => ({ label: e, value: e }));
   const [startDrawingSession, setStartDrawingSession] = useState(false);
+  const [imageCount, setImageCount] = useState<number | null>(null);
+  const [duration, setDuration] = useState<number | null>(null);
+  const startEnabled =
+    selectedOption != '' && imageCount != null && duration != null;
 
   return (
     <div className="relative h-screen">
@@ -82,12 +89,48 @@ export default function Home() {
             </div>
           )}
         </div>
+        <div className="flex flex-col items-center space-y-4">
+          <h3>How many images you want to draw?</h3>
+          <div className="flex space-x-4">
+            {imageCountOptions.map((value) => (
+              <button
+                key={value}
+                onClick={() => setImageCount(value)}
+                className={playfulButton({
+                  intent: imageCount === value ? 'active' : 'primary',
+                })}
+              >
+                {value}
+              </button>
+            ))}
+          </div>
+        </div>
+        <div className="flex flex-col items-center space-y-4">
+          <h3>Draw time for each image (in minutes)</h3>
+          <div className="flex space-x-4">
+            {timerDurationOptions.map((value) => (
+              <button
+                key={value}
+                onClick={() => setDuration(value)}
+                className={playfulButton({
+                  intent: duration === value ? 'active' : 'primary',
+                })}
+              >
+                {value}
+              </button>
+            ))}
+          </div>
+        </div>
         <button
-          {...playfulButtonDesign}
-          disabled={selectedOption === ''}
+          className={playfulButton({
+            intent: startEnabled ? 'primary' : 'disabled',
+          })}
+          disabled={!startEnabled}
           onClick={async () => {
             setStartDrawingSession(true);
-            await router.push(`draw/${selectedOption}`);
+            await router.push(
+              `draw/${selectedOption}?imageCount=${imageCount}&duration=${duration}`
+            );
           }}
         >
           Start
