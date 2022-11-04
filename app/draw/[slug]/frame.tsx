@@ -123,6 +123,7 @@ export function Frame({ photos }: { photos: Photo[] }) {
               onClick={() => toggleFlip()}
               title="Flip (f)"
             >
+              {flipped && <div className="w-2 h-2 bg-blue-600 rounded-full" />}{' '}
               flip
             </button>
           </div>
