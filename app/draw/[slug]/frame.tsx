@@ -10,7 +10,7 @@ import { Photo } from 'pexels';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import useWebAnimations from '@wellyshen/use-web-animations';
 import Attribution from '../../../components/attribution';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { playfulButton } from '../../../components/design';
 
 function useRotation() {
@@ -28,6 +28,7 @@ export function Frame({
   duration: number;
   photos: Photo[];
 }) {
+  const audioRef = useRef<HTMLAudioElement>(null);
   const [currentStep, { goToNextStep }] = useStep(photos.length);
   const { value: isPlaying, toggle: toggleTimer } = useBoolean(true);
   const { value: flipped, toggle: toggleFlip } = useBoolean(false);
@@ -105,12 +106,16 @@ export function Frame({
             {isPlaying ? <PauseIcon width="24" /> : <PlayIcon width="24" />}
           </button>
         </div>
+        <audio ref={audioRef} src="/sound.wav"></audio>
         <CountdownCircleTimer
           duration={duration * 60}
           isPlaying={isPlaying}
           key={currentStep}
           colors={'#000000'}
-          onComplete={() => nextImage()}
+          onComplete={() => {
+            audioRef.current?.play();
+            nextImage();
+          }}
         >
           {({ remainingTime }) => (
             <button className="text-4xl" onClick={toggleTimer}>
