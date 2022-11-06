@@ -8,8 +8,6 @@ async function getData(imageCount: number, category: string): Promise<Photo[]> {
     per_page: imageCount,
   })) as PhotosWithTotalResults;
 
-  console.log(response.photos);
-
   if (response.photos.length === 0) {
     throw Error('Images are empty');
   }
