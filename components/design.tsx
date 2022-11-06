@@ -5,7 +5,8 @@ export const playfulButton = cva(
   {
     variants: {
       intent: {
-        primary: 'bg-transparent text-black hover:bg-black hover:text-white',
+        primary:
+          'bg-transparent text-black hover:bg-slate-700 hover:text-white',
         active: 'bg-black text-white',
         disabled: 'border-transparent opacity-50',
       },
