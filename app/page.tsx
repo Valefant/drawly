@@ -7,6 +7,8 @@ import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Select from 'react-select';
 import { playfulButton } from '../components/design';
+import MoonIcon from '@heroicons/react/24/solid/MoonIcon';
+import SunIcon from '@heroicons/react/24/solid/SunIcon';
 
 function useSuggestions(searchTerm: string): {
   suggestions: string[];
@@ -62,6 +64,26 @@ export default function Home() {
         quality={100}
       />
       <div className="relative flex flex-col items-center justify-center h-full space-y-8">
+        <div className="flex space-x-4">
+          <button
+            title="Light mode"
+            onClick={() => {
+              fetch('/api/preferences?theme=light');
+              document?.querySelector('html')?.classList.remove('dark');
+            }}
+          >
+            <SunIcon className="aspect-square dark:text-white w-4 text-black" />
+          </button>
+          <button
+            title="Light mode"
+            onClick={() => {
+              fetch('/api/preferences?theme=dark');
+              document?.querySelector('html')?.classList.add('dark');
+            }}
+          >
+            <MoonIcon className="aspect-square dark:text-white w-4 text-black" />
+          </button>
+        </div>
         <h1 className="text-5xl font-bold">Drawly</h1>
         <div className="w-[22rem]">
           {!startDrawingSession && (
