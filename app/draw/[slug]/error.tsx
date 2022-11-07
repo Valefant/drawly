@@ -15,7 +15,7 @@ export default function Error({
   reset: () => void;
 }) {
   return (
-    <div className="flex flex-col items-center justify-center h-screen space-y-8">
+    <div className="dark:bg-neutral-800 dark:text-white flex flex-col items-center justify-center h-screen space-y-8">
       <h1 className="text-3xl">Sorry, something went wrong :(</h1>
       <figure className="space-y-4">
         <Image

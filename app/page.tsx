@@ -51,11 +51,11 @@ export default function Home() {
     selectedOption != '' && imageCount != null && duration != null;
 
   return (
-    <div className="relative h-screen">
+    <div className="dark:bg-neutral-800 dark:text-white relative h-screen bg-gray-100">
       <Image
         src={bgImage}
         alt="background"
-        className="absolute h-full"
+        className="dark:brightness-[.25] opacity-10 brightness-75 absolute h-full"
         style={{
           objectFit: 'cover',
         }}
@@ -69,7 +69,8 @@ export default function Home() {
               name="suggestions"
               isLoading={isLoading}
               options={suggestionOptions}
-              classNamePrefix="select"
+              className="react-select-container"
+              classNamePrefix="react-select"
               onInputChange={(input) => {
                 setSearchTerm(input);
               }}

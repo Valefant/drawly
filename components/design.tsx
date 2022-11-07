@@ -1,13 +1,13 @@
 import { cva } from 'class-variance-authority';
 
 export const playfulButton = cva(
-  ['border-black', 'border-[3px]', 'border-form-playful'],
+  ['dark:border-white', 'border-black', 'border-[3px]', 'border-form-playful'],
   {
     variants: {
       intent: {
         primary:
-          'bg-transparent text-black hover:bg-slate-700 hover:text-white',
-        active: 'bg-black text-white',
+          'bg-transparent text-black hover:bg-slate-700 hover:text-white dark:text-white dark:hover:bg-slate-300 dark:hover:text-black',
+        active: 'bg-black text-white dark:bg-white dark:text-black',
         disabled: 'border-transparent opacity-50',
       },
       size: {

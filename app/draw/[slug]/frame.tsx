@@ -156,9 +156,9 @@ export function Frame({
   });
 
   return (
-    <div className="md:space-y-8 flex flex-col items-center justify-center h-screen space-y-4">
+    <div className="dark:bg-neutral-800 dark:text-white md:space-y-8 flex flex-col items-center justify-center h-screen space-y-4">
       <picture
-        className="relative z-10"
+        className="dark:border-white relative z-10 border-2 border-black"
         style={{
           transition: 'transform 0.3s',
           transform: `rotate(${rotation}deg) scaleX(${flipped ? -1 : 1})`,
@@ -198,22 +198,27 @@ export function Frame({
           </button>
         </div>
         <audio ref={audioRef} src="/sound.wav"></audio>
-        <CountdownCircleTimer
-          duration={duration * 60}
-          isPlaying={isPlaying}
-          key={currentStep}
-          colors={'#000000'}
-          onComplete={() => {
-            audioRef.current?.play();
-            nextImage();
-          }}
-        >
-          {({ remainingTime }) => (
-            <button className="text-4xl" onClick={toggleTimer}>
-              {remainingTime}
-            </button>
-          )}
-        </CountdownCircleTimer>
+        <div className="dark:invert">
+          <CountdownCircleTimer
+            duration={duration * 60}
+            isPlaying={isPlaying}
+            key={currentStep}
+            colors={'#000000'}
+            onComplete={() => {
+              audioRef.current?.play();
+              nextImage();
+            }}
+          >
+            {({ remainingTime }) => (
+              <button
+                className="dark:text-black text-4xl"
+                onClick={toggleTimer}
+              >
+                {remainingTime}
+              </button>
+            )}
+          </CountdownCircleTimer>
+        </div>
         <div className="flex flex-col space-y-2">
           <FilterSelection
             activeFilter={activeFilter}
