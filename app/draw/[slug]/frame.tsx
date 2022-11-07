@@ -199,7 +199,7 @@ export function Frame({
         </div>
         <audio ref={audioRef} src="/sound.wav"></audio>
         <CountdownCircleTimer
-          duration={duration * 10}
+          duration={duration * 60}
           isPlaying={isPlaying}
           key={currentStep}
           colors={'#000000'}
