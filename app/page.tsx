@@ -9,6 +9,7 @@ import Select from 'react-select';
 import { playfulButton } from '../components/design';
 import MoonIcon from '@heroicons/react/24/solid/MoonIcon';
 import SunIcon from '@heroicons/react/24/solid/SunIcon';
+import { fetchSuggestions, saveThemePreference } from '../lib/clientApi';
 
 function useSuggestions(searchTerm: string): {
   suggestions: string[];
@@ -29,11 +30,6 @@ function useSuggestions(searchTerm: string): {
   }, [searchTerm]);
 
   return { suggestions, suggestionsLoading: isLoading };
-}
-
-async function fetchSuggestions(searchTerm: string): Promise<string[]> {
-  const response = await fetch(`api/suggestions?term=${searchTerm}`);
-  return await response.json();
 }
 
 const imageCountOptions = [5, 10, 15];
@@ -69,16 +65,16 @@ export default function Home() {
           <button
             title="Light mode"
             onClick={() => {
-              fetch('/api/preferences?theme=light');
+              saveThemePreference('light');
               document?.querySelector('html')?.classList.remove('dark');
             }}
           >
             <SunIcon className="aspect-square dark:text-white w-4 text-black" />
           </button>
           <button
-            title="Light mode"
+            title="Dark mode"
             onClick={() => {
-              fetch('/api/preferences?theme=dark');
+              saveThemePreference('dark');
               document?.querySelector('html')?.classList.add('dark');
             }}
           >

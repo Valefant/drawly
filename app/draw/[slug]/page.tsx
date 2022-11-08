@@ -1,18 +1,9 @@
-import { Photo, PhotosWithTotalResults } from 'pexels';
-import { pexelsApi } from '../../../server';
+import { Photo } from 'pexels';
+import { getPhotos } from '../../../lib/serverApi';
 import { Frame } from './frame';
 
 async function getData(imageCount: number, category: string): Promise<Photo[]> {
-  const response = (await pexelsApi.photos.search({
-    query: category as string,
-    per_page: imageCount,
-  })) as PhotosWithTotalResults;
-
-  if (response.photos.length === 0) {
-    throw Error('Images are empty');
-  }
-
-  return response.photos;
+  return getPhotos(imageCount, category);
 }
 
 export default async function DrawingSession({
