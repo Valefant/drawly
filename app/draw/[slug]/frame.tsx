@@ -12,13 +12,7 @@ import useWebAnimations from '@wellyshen/use-web-animations';
 import Attribution from '../../../components/attribution';
 import { useRef, useState } from 'react';
 import { playfulButton } from '../../../components/design';
-import {
-  getImageData,
-  grayscale,
-  printCanvas,
-  roberts,
-  thresholding,
-} from 'lena-ts';
+import { grayscale, printCanvas, roberts, thresholding } from 'lena-ts';
 
 function useRotation() {
   const [rotation, setRotation] = useState(0);
@@ -117,15 +111,6 @@ export function Frame({
     }
   };
 
-  const synchronizeCanvas = () => {
-    if (imgRef.current === null || canvasRef.current === null) {
-      return;
-    }
-
-    canvasRef.current.width = imgRef.current.width;
-    canvasRef.current.height = imgRef.current.height;
-  };
-
   useEventListener('keydown', (e) => {
     const key = e.code;
 
@@ -170,10 +155,10 @@ export function Frame({
           ref={imgRef}
           alt={photo.alt as string}
           src={photo.src.large}
-          onLoad={synchronizeCanvas}
           className={activeFilter ? 'hidden' : ''}
         />
         <canvas
+          style={{ width: '100%', height: '100%' }}
           ref={canvasRef}
           className={activeFilter ? '' : 'hidden'}
         ></canvas>
@@ -262,4 +247,21 @@ export function Frame({
       </div>
     </div>
   );
+}
+
+/**
+ * This is a replacement function for the one provided by lena-ts.
+ * When the image element is resized (e.g. when using a smaller viewport on mobile) the image is scaled automatically.
+ * Taking the element width and height of the original getImageData function will lose pixels
+ * as the image could be scaled down.
+ *
+ * @param img The img element to get the intrinsic size from
+ */
+function getImageData(img: HTMLImageElement): ImageData {
+  const canvas = document.createElement('canvas');
+  canvas.width = img.naturalWidth;
+  canvas.height = img.naturalHeight;
+  const ctx = canvas.getContext('2d')!;
+  ctx.drawImage(img, 0, 0);
+  return ctx.getImageData(0, 0, img.naturalWidth, img.naturalHeight);
 }
