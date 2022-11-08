@@ -9,6 +9,9 @@
     "start": "next start",
     "lint": "next lint"
   },
+  "engines" : {
+    "node" : ">=16.0.0"
+  },
   "dependencies": {
     "@heroicons/react": "^2.0.13",
     "@next/font": "^13.0.2",
