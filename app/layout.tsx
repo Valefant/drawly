@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   const title = `App | ${pkg.name}`;
   const nextCookies = cookies();
-  const theme = nextCookies.get('theme');
+  const theme = nextCookies.get('theme')?.value;
 
   return (
     <html
