@@ -12,7 +12,7 @@ import SunIcon from '@heroicons/react/24/solid/SunIcon';
 
 function useSuggestions(searchTerm: string): {
   suggestions: string[];
-  isLoading: boolean;
+  suggestionsLoading: boolean;
 } {
   const [suggestions, setSuggestions] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -28,7 +28,7 @@ function useSuggestions(searchTerm: string): {
       .finally(() => setIsLoading(false));
   }, [searchTerm]);
 
-  return { suggestions, isLoading };
+  return { suggestions, suggestionsLoading: isLoading };
 }
 
 async function fetchSuggestions(searchTerm: string): Promise<string[]> {
@@ -44,9 +44,10 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedOption, setSelectedOption] = useState('');
   const debouncedSearchTerm = useDebounce(searchTerm, 250);
-  const { suggestions, isLoading } = useSuggestions(debouncedSearchTerm);
+  const { suggestions, suggestionsLoading } =
+    useSuggestions(debouncedSearchTerm);
   const suggestionOptions = suggestions.map((e) => ({ label: e, value: e }));
-  const [startDrawingSession, setStartDrawingSession] = useState(false);
+  const [startingDrawingSession, setStartingDrawingSession] = useState(false);
   const [imageCount, setImageCount] = useState<number | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
   const startEnabled =
@@ -85,32 +86,28 @@ export default function Home() {
           </button>
         </div>
         <h1 className="text-5xl font-bold">Drawly</h1>
+        {startingDrawingSession && (
+          <div className="flex justify-center">Starting drawing session...</div>
+        )}
         <div className="w-[22rem]">
-          {!startDrawingSession && (
-            <Select
-              name="suggestions"
-              isLoading={isLoading}
-              options={suggestionOptions}
-              className="react-select-container"
-              classNamePrefix="react-select"
-              onInputChange={(input) => {
-                setSearchTerm(input);
-              }}
-              onChange={(option) => {
-                setSelectedOption(option?.value ?? '');
-              }}
-              placeholder={'Type for suggestions...'}
-              isClearable={true}
-              noOptionsMessage={() =>
-                'We could not find any related images for your search'
-              }
-            />
-          )}
-          {startDrawingSession && (
-            <div className="flex justify-center">
-              Starting drawing session...
-            </div>
-          )}
+          <Select
+            name="suggestions"
+            isLoading={suggestionsLoading}
+            options={suggestionOptions}
+            className="react-select-container"
+            classNamePrefix="react-select"
+            onInputChange={(input) => {
+              setSearchTerm(input);
+            }}
+            onChange={(option) => {
+              setSelectedOption(option?.value ?? '');
+            }}
+            placeholder={'Type for suggestions...'}
+            isClearable={true}
+            noOptionsMessage={() =>
+              'We could not find any related categories for your search'
+            }
+          />
         </div>
         <div className="flex flex-col items-center space-y-4">
           <h3>How many images you want to draw?</h3>
@@ -148,9 +145,9 @@ export default function Home() {
           className={playfulButton({
             intent: startEnabled ? 'primary' : 'disabled',
           })}
-          disabled={!startEnabled}
+          disabled={!startEnabled || startingDrawingSession}
           onClick={async () => {
-            setStartDrawingSession(true);
+            setStartingDrawingSession(true);
             await router.push(
               `draw/${selectedOption}?imageCount=${imageCount}&duration=${duration}`
             );
