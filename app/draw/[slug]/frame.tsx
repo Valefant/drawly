@@ -64,12 +64,19 @@ export function Frame({
   duration: number;
   photos: Photo[];
 }) {
+  const documentRef = useRef<Document>(document);
   const audioRef = useRef<HTMLAudioElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [currentStep, { goToNextStep }] = useStep(photos.length);
   const [activeFilter, setActiveFilter] = useState<Filter | null>(null);
-  const { value: isPlaying, toggle: toggleTimer } = useBoolean(true);
+  const {
+    value: isPlaying,
+    toggle: toggleTimer,
+    setTrue: continueTimer,
+    setFalse: pauseTimer,
+  } = useBoolean(true);
+  const timerPausedByInactiveTab = useRef(false);
   const { value: flipped, toggle: toggleFlip } = useBoolean(false);
   const { rotation, rotate } = useRotation();
   // step starts by 1
@@ -110,6 +117,25 @@ export function Frame({
       setActiveFilter(filter);
     }
   };
+
+  useEventListener(
+    'visibilitychange',
+    () => {
+      if (document.hidden) {
+        if (isPlaying) {
+          pauseTimer();
+          timerPausedByInactiveTab.current = true;
+        } else {
+          timerPausedByInactiveTab.current = false;
+        }
+      } else {
+        if (timerPausedByInactiveTab.current) {
+          continueTimer();
+        }
+      }
+    },
+    documentRef
+  );
 
   useEventListener('keydown', (e) => {
     const key = e.code;
