@@ -107,7 +107,8 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
             onChange={(option) => {
               setSelectedOption(
                 // ugly hack because the option variable is not properly typed making use of the grouped options
-                (option as unknown as { label: string; value: string }).value
+                // optional chaining is used because the on change event is also triggered when an option is cleared
+                (option as unknown as { label: string; value: string })?.value
               );
             }}
             placeholder={'Type for suggestions...'}
