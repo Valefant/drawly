@@ -88,7 +88,7 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
   const [numberOfImages, setNumberOfImages] = useState<number | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
   const startEnabled =
-    selectedCategory != '' && numberOfImages != null && duration != null;
+    selectedCategory && numberOfImages != null && duration != null;
 
   const groupedOptions = [
     {
