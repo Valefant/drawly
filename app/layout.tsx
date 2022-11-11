@@ -19,7 +19,11 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cx(font.className, theme === 'dark' ? 'dark' : '')}
+      className={cx(
+        font.className,
+        theme === 'dark' ? 'dark' : '',
+        'select-none'
+      )}
     >
       <head>
         <title>{title}</title>
