@@ -1,3 +1,5 @@
+import { Author } from '../lib/domainTypes';
+
 export default function Attribution({
   className = '',
   imageUrl,
@@ -6,10 +8,7 @@ export default function Attribution({
 }: {
   className: string;
   imageUrl: string;
-  author: {
-    name: string;
-    profileUrl: string;
-  };
+  author: Author;
   platform: string;
 }) {
   return (

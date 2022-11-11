@@ -15,6 +15,7 @@
   "dependencies": {
     "@heroicons/react": "^2.0.13",
     "@next/font": "^13.0.3",
+    "@upstash/redis": "^1.16.0",
     "@wellyshen/use-web-animations": "^0.9.1",
     "class-variance-authority": "^0.3.0",
     "lena-ts": "^0.1.21",

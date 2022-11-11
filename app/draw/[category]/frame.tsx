@@ -6,13 +6,13 @@ import {
   PlayIcon,
   PauseIcon,
 } from '@heroicons/react/24/solid';
-import { Photo } from 'pexels';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import useWebAnimations from '@wellyshen/use-web-animations';
 import Attribution from '../../../components/attribution';
 import { useEffect, useRef, useState } from 'react';
 import { playfulButton } from '../../../components/design';
 import { grayscale, printCanvas, roberts, thresholding } from 'lena-ts';
+import { ImageInfo } from '../../../lib/domainTypes';
 
 function useRotation() {
   const [rotation, setRotation] = useState(0);
@@ -59,16 +59,16 @@ function FilterSelection({
 
 export function Frame({
   duration,
-  photos,
+  images,
 }: {
   duration: number;
-  photos: Photo[];
+  images: ImageInfo[];
 }) {
   const documentRef = useRef<Document | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [currentStep, { goToNextStep }] = useStep(photos.length);
+  const [currentStep, { goToNextStep }] = useStep(images.length);
   const [activeFilter, setActiveFilter] = useState<Filter | null>(null);
   const {
     value: isPlaying,
@@ -81,7 +81,7 @@ export function Frame({
   const { rotation, rotate } = useRotation();
   // step starts by 1
   const index = currentStep - 1;
-  const photo = photos[index];
+  const imageInfo = images[index];
 
   const { ref, getAnimation } = useWebAnimations<HTMLDivElement>({
     keyframes: { opacity: [1, 0] },
@@ -183,8 +183,8 @@ export function Frame({
         <img
           crossOrigin="anonymous"
           ref={imgRef}
-          alt={photo.alt as string}
-          src={photo.src.large}
+          alt={imageInfo.alt as string}
+          src={imageInfo.src.large}
           className={activeFilter ? 'hidden' : ''}
         />
         <canvas
@@ -195,10 +195,10 @@ export function Frame({
       </picture>
       <Attribution
         className="flex opacity-50"
-        imageUrl={photo.src.original}
+        imageUrl={imageInfo.src.original}
         author={{
-          name: photo.photographer,
-          profileUrl: photo.photographer_url,
+          name: imageInfo.author.name,
+          profileUrl: imageInfo.author.profileUrl,
         }}
         platform="Pexels"
       />
@@ -271,7 +271,7 @@ export function Frame({
           </button>
 
           <div className="ml-4 text-lg">
-            <span className="font-bold">{currentStep}</span> / {photos.length}
+            <span className="font-bold">{currentStep}</span> / {images.length}
           </div>
         </div>
       </div>
