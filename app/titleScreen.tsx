@@ -10,6 +10,7 @@ import SunIcon from '@heroicons/react/24/solid/SunIcon';
 import MoonIcon from '@heroicons/react/24/solid/MoonIcon';
 import Select from 'react-select';
 import { playfulButton } from './components/design';
+import pkg from '../package.json';
 
 function useSuggestions(searchTerm: string): {
   suggestions: string[];
@@ -34,6 +35,7 @@ function useSuggestions(searchTerm: string): {
 
 const categoriesToSelectFrom = [
   'animal',
+  'boxing',
   'car',
   'cat',
   'dancing',
@@ -43,12 +45,18 @@ const categoriesToSelectFrom = [
   'flower',
   'fruit',
   'hand',
+  'jump',
   'martial arts',
+  'model',
   'motorcycle',
+  'parkour',
+  'portrait',
   'pose',
   'robot',
   'skating',
+  'sport',
   'tree',
+  'vase',
 ];
 const numberOfImagesOptions = [5, 10, 15];
 const timerDurationOptions = [1, 3, 5];
@@ -63,6 +71,7 @@ function toOption<T>(value: T): { label: T; value: T } {
 
 export default function TitleScreen({ categories }: { categories: string[] }) {
   const router = useRouter();
+  const version = pkg.version;
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategoryOption, setSelectedCategoryOption] = useState<{
     label: string;
@@ -105,7 +114,8 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
         }}
         quality={100}
       />
-      <div className="relative flex flex-col items-center justify-center h-full space-y-8">
+
+      <div className="md:space-y-8 relative flex flex-col items-center justify-center h-full space-y-6">
         <div className="flex space-x-4">
           <button
             title="Light mode"
@@ -208,6 +218,7 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
         <a className="underline opacity-50" href="https://www.pexels.com">
           Photos provided by Pexels
         </a>
+        <div className="opacity-25">ver. {version}</div>
       </div>
     </div>
   );

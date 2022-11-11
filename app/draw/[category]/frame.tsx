@@ -13,6 +13,7 @@ import { useEffect, useRef, useState } from 'react';
 import { playfulButton } from '../../components/design';
 import { grayscale, printCanvas, roberts, thresholding } from 'lena-ts';
 import { ImageInfo } from '../../../lib/domainTypes';
+import { useRouter } from 'next/navigation';
 
 function useRotation() {
   const [rotation, setRotation] = useState(0);
@@ -64,11 +65,14 @@ export function Frame({
   duration: number;
   images: ImageInfo[];
 }) {
+  const router = useRouter();
   const documentRef = useRef<Document | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [currentStep, { goToNextStep }] = useStep(images.length);
+  const [currentStep, { goToNextStep, canGoToNextStep }] = useStep(
+    images.length
+  );
   const [activeFilter, setActiveFilter] = useState<Filter | null>(null);
   const {
     value: isPlaying,
@@ -94,7 +98,11 @@ export function Frame({
     documentRef.current = window.document;
   }, []);
 
-  const nextImage = () => {
+  const nextImage = async () => {
+    if (!canGoToNextStep) {
+      await router.push('/');
+      return;
+    }
     goToNextStep();
     // todo: active filter should be applied to the next image as well
     setActiveFilter(null);

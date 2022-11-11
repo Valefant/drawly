@@ -1,7 +1,7 @@
 import TitleScreen from './titleScreen';
 
 async function getData(): Promise<string[]> {
-  return ['cat'];
+  return [];
 }
 
 export default async function Home() {
