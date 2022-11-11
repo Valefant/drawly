@@ -2,8 +2,11 @@ import { Photo } from 'pexels';
 import { getPhotos } from '../../../lib/serverApi';
 import { Frame } from './frame';
 
-async function getData(imageCount: number, category: string): Promise<Photo[]> {
-  return getPhotos(imageCount, category);
+async function getData(
+  numberOfImages: number,
+  category: string
+): Promise<Photo[]> {
+  return getPhotos(numberOfImages, category);
 }
 
 export default async function DrawingSession({
@@ -11,9 +14,9 @@ export default async function DrawingSession({
   searchParams,
 }: {
   params: { slug: string };
-  searchParams: { imageCount: number; duration: number };
+  searchParams: { numberOfImages: number; duration: number };
 }) {
-  const photos = await getData(searchParams.imageCount, params.slug);
+  const photos = await getData(searchParams.numberOfImages, params.slug);
 
   return <Frame duration={searchParams.duration} photos={photos} />;
 }

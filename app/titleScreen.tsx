@@ -50,7 +50,7 @@ const categoriesToSelectFrom = [
   'skating',
   'tree',
 ];
-const imageCountOptions = [5, 10, 15];
+const numberOfImagesOptions = [5, 10, 15];
 const timerDurationOptions = [1, 3, 5];
 
 function random<T>(list: T[]): T {
@@ -76,10 +76,10 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
     (e) => ({ label: e, value: e })
   );
   const [startingDrawingSession, setStartingDrawingSession] = useState(false);
-  const [imageCount, setImageCount] = useState<number | null>(null);
+  const [numberOfImages, setNumberOfImages] = useState<number | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
   const startEnabled =
-    selectedCategory != '' && imageCount != null && duration != null;
+    selectedCategory != '' && numberOfImages != null && duration != null;
 
   const groupedOptions = [
     {
@@ -90,7 +90,7 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
 
   const randomSettings = () => {
     setSelectedCategoryOption(toOption(random(categoriesToSelectFrom)));
-    setImageCount(random(imageCountOptions));
+    setNumberOfImages(random(numberOfImagesOptions));
     setDuration(random(timerDurationOptions));
   };
 
@@ -161,12 +161,12 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
         <div className="flex flex-col items-center space-y-4">
           <h3>How many images you want to draw?</h3>
           <div className="flex space-x-4">
-            {imageCountOptions.map((value) => (
+            {numberOfImagesOptions.map((value) => (
               <button
                 key={value}
-                onClick={() => setImageCount(value)}
+                onClick={() => setNumberOfImages(value)}
                 className={playfulButton({
-                  intent: imageCount === value ? 'active' : 'primary',
+                  intent: numberOfImages === value ? 'active' : 'primary',
                 })}
               >
                 {value}
@@ -199,7 +199,7 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
           onClick={async () => {
             setStartingDrawingSession(true);
             await router.push(
-              `draw/${selectedCategory}?imageCount=${imageCount}&duration=${duration}`
+              `draw/${selectedCategory}?numberOfImages=${numberOfImages}&duration=${duration}`
             );
           }}
         >
