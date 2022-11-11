@@ -3,6 +3,7 @@ import { Gloria_Hallelujah } from '@next/font/google';
 import pkg from '../package.json';
 import { cookies } from 'next/headers';
 import { cx } from 'class-variance-authority';
+import { AnalyticsWrapper } from './components/analytics';
 
 const font = Gloria_Hallelujah({ weight: '400', subsets: ['latin'] });
 
@@ -25,7 +26,10 @@ export default function RootLayout({
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta name="description" content={pkg.description} />
       </head>
-      <body>{children}</body>
+      <body>
+        {children}
+        <AnalyticsWrapper />
+      </body>
     </html>
   );
 }
