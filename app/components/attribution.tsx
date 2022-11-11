@@ -1,4 +1,4 @@
-import { Author } from '../lib/domainTypes';
+import { Author } from '../../lib/domainTypes';
 
 export default function Attribution({
   className = '',

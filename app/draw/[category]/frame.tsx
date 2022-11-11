@@ -8,9 +8,9 @@ import {
 } from '@heroicons/react/24/solid';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import useWebAnimations from '@wellyshen/use-web-animations';
-import Attribution from '../../../components/attribution';
+import Attribution from '../../components/attribution';
 import { useEffect, useRef, useState } from 'react';
-import { playfulButton } from '../../../components/design';
+import { playfulButton } from '../../components/design';
 import { grayscale, printCanvas, roberts, thresholding } from 'lena-ts';
 import { ImageInfo } from '../../../lib/domainTypes';
 

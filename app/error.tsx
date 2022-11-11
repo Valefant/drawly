@@ -2,8 +2,8 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { playfulButton } from '../components/design';
-import Attribution from '../components/attribution';
+import { playfulButton } from './components/design';
+import Attribution from './components/attribution';
 
 const imageWidth = 690;
 const imageHeight = 480;

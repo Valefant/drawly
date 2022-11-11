@@ -9,7 +9,7 @@ import bgImage from '../public/tile_background.png';
 import SunIcon from '@heroicons/react/24/solid/SunIcon';
 import MoonIcon from '@heroicons/react/24/solid/MoonIcon';
 import Select from 'react-select';
-import { playfulButton } from '../components/design';
+import { playfulButton } from './components/design';
 
 function useSuggestions(searchTerm: string): {
   suggestions: string[];
