@@ -12,7 +12,7 @@ import Attribution from '../../components/attribution';
 import { useEffect, useRef, useState } from 'react';
 import { playfulButton } from '../../components/design';
 import { grayscale, printCanvas, roberts, thresholding } from 'lena-ts';
-import { ImageInfo } from '../../../lib/domainTypes';
+import { DrawingMode, ImageInfo, TimerMode } from '../../../lib/domainTypes';
 import { useRouter } from 'next/navigation';
 
 function useRotation() {
@@ -61,9 +61,11 @@ function FilterSelection({
 export function Frame({
   duration,
   images,
+  drawingMode,
 }: {
   duration: number;
   images: ImageInfo[];
+  drawingMode: DrawingMode;
 }) {
   const router = useRouter();
   const documentRef = useRef<Document | null>(null);
@@ -83,6 +85,9 @@ export function Frame({
   const timerPausedByInactiveTab = useRef(false);
   const { value: flipped, toggle: toggleFlip } = useBoolean(false);
   const { rotation, rotate } = useRotation();
+  const [timerMode, setTimerMode] = useState<TimerMode>(
+    drawingMode === 'memory' ? 'memorize' : 'drawing'
+  );
   // step starts by 1
   const index = currentStep - 1;
   const imageInfo = images[index];
@@ -99,6 +104,15 @@ export function Frame({
   }, []);
 
   const nextImage = async () => {
+    if (timerMode === 'memorize') {
+      setTimerMode('drawing');
+      return;
+    }
+
+    if (drawingMode === 'memory' && timerMode === 'drawing') {
+      setTimerMode('memorize');
+    }
+
     if (!canGoToNextStep) {
       await router.push('/');
       return;
@@ -185,6 +199,10 @@ export function Frame({
         style={{
           transition: 'transform 0.3s',
           transform: `rotate(${rotation}deg) scaleX(${flipped ? -1 : 1})`,
+          visibility:
+            timerMode === 'memorize' || drawingMode === 'reference'
+              ? 'visible'
+              : 'hidden',
         }}
       >
         <div className="absolute inset-0 z-20 bg-white opacity-0" ref={ref} />
@@ -223,9 +241,9 @@ export function Frame({
         <audio ref={audioRef} src="/sound.wav"></audio>
         <div className="dark:invert">
           <CountdownCircleTimer
-            duration={duration * 60}
+            duration={timerMode === 'memorize' ? 10 : duration * 60}
             isPlaying={isPlaying}
-            key={currentStep}
+            key={`${currentStep}:${timerMode}`}
             colors={'#000000'}
             onComplete={() => {
               audioRef.current?.play();

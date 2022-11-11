@@ -11,6 +11,7 @@ import MoonIcon from '@heroicons/react/24/solid/MoonIcon';
 import Select from 'react-select';
 import { playfulButton } from './components/design';
 import pkg from '../package.json';
+import { DrawingMode } from '../lib/domainTypes';
 
 function useSuggestions(searchTerm: string): {
   suggestions: string[];
@@ -87,6 +88,7 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
   const [startingDrawingSession, setStartingDrawingSession] = useState(false);
   const [numberOfImages, setNumberOfImages] = useState<number | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
+  const [drawingMode, setDrawingMode] = useState<DrawingMode>('reference');
   const startEnabled =
     selectedCategory && numberOfImages != null && duration != null;
 
@@ -104,7 +106,7 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
   };
 
   return (
-    <div className="dark:bg-neutral-800 dark:text-white relative h-screen bg-gray-100">
+    <div className="dark:bg-neutral-800 dark:text-white md:h-screen relative bg-gray-100">
       <Image
         src={bgImage}
         alt="background"
@@ -200,7 +202,27 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
             ))}
           </div>
         </div>
-
+        <div className="flex flex-col items-center space-y-4">
+          <h3>Drawing mode</h3>
+          <div className="flex space-x-4">
+            <button
+              className={playfulButton({
+                intent: drawingMode === 'reference' ? 'active' : 'primary',
+              })}
+              onClick={() => setDrawingMode('reference')}
+            >
+              Reference
+            </button>
+            <button
+              className={playfulButton({
+                intent: drawingMode === 'memory' ? 'active' : 'primary',
+              })}
+              onClick={() => setDrawingMode('memory')}
+            >
+              Memory
+            </button>
+          </div>
+        </div>
         <button
           className={playfulButton({
             intent: startEnabled ? 'primary' : 'disabled',
@@ -209,7 +231,7 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
           onClick={async () => {
             setStartingDrawingSession(true);
             await router.push(
-              `draw/${selectedCategory}?numberOfImages=${numberOfImages}&duration=${duration}`
+              `draw/${selectedCategory}?numberOfImages=${numberOfImages}&duration=${duration}&drawingMode=${drawingMode}`
             );
           }}
         >

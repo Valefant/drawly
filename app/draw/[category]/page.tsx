@@ -2,7 +2,7 @@ import { Photo } from 'pexels';
 import { getPhotos } from '../../../lib/serverApi';
 import { Frame } from './frame';
 import { redis } from '../../../lib/init';
-import { ImageInfo } from '../../../lib/domainTypes';
+import { DrawingMode, ImageInfo } from '../../../lib/domainTypes';
 
 async function getData(
   numberOfImages: number,
@@ -16,7 +16,11 @@ export default async function DrawingSession({
   searchParams,
 }: {
   params: { category: string };
-  searchParams: { numberOfImages: number; duration: number };
+  searchParams: {
+    numberOfImages: number;
+    duration: number;
+    drawingMode: DrawingMode;
+  };
 }) {
   let images: ImageInfo[];
 
@@ -36,7 +40,13 @@ export default async function DrawingSession({
     );
   }
 
-  return <Frame duration={searchParams.duration} images={images} />;
+  return (
+    <Frame
+      duration={searchParams.duration}
+      images={images}
+      drawingMode={searchParams.drawingMode}
+    />
+  );
 }
 
 function pexelsMapper(photos: Photo[]): ImageInfo[] {
