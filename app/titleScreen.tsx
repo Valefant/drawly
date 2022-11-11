@@ -32,13 +32,43 @@ function useSuggestions(searchTerm: string): {
   return { suggestions, suggestionsLoading: isLoading };
 }
 
+const categoriesToSelectFrom = [
+  'animal',
+  'car',
+  'cat',
+  'dancing',
+  'dog',
+  'figure',
+  'fitness',
+  'flower',
+  'fruit',
+  'hand',
+  'martial arts',
+  'motorcycle',
+  'pose',
+  'robot',
+  'skating',
+  'tree',
+];
 const imageCountOptions = [5, 10, 15];
 const timerDurationOptions = [1, 3, 5];
+
+function random<T>(list: T[]): T {
+  return list[Math.floor(Math.random() * list.length)];
+}
+
+function toOption<T>(value: T): { label: T; value: T } {
+  return { label: value, value };
+}
 
 export default function TitleScreen({ categories }: { categories: string[] }) {
   const router = useRouter();
   const [searchTerm, setSearchTerm] = useState('');
-  const [selectedOption, setSelectedOption] = useState('');
+  const [selectedCategoryOption, setSelectedCategoryOption] = useState<{
+    label: string;
+    value: string;
+  } | null>(null);
+  const selectedCategory = selectedCategoryOption?.value;
   const debouncedSearchTerm = useDebounce(searchTerm, 250);
   const { suggestions, suggestionsLoading } =
     useSuggestions(debouncedSearchTerm);
@@ -49,7 +79,7 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
   const [imageCount, setImageCount] = useState<number | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
   const startEnabled =
-    selectedOption != '' && imageCount != null && duration != null;
+    selectedCategory != '' && imageCount != null && duration != null;
 
   const groupedOptions = [
     {
@@ -57,6 +87,12 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
       options: suggestionOptions,
     },
   ];
+
+  const randomSettings = () => {
+    setSelectedCategoryOption(toOption(random(categoriesToSelectFrom)));
+    setImageCount(random(imageCountOptions));
+    setDuration(random(timerDurationOptions));
+  };
 
   return (
     <div className="dark:bg-neutral-800 dark:text-white relative h-screen bg-gray-100">
@@ -104,11 +140,12 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
             onInputChange={(input) => {
               setSearchTerm(input);
             }}
+            value={selectedCategoryOption}
             onChange={(option) => {
-              setSelectedOption(
+              setSelectedCategoryOption(
                 // ugly hack because the option variable is not properly typed making use of the grouped options
                 // optional chaining is used because the on change event is also triggered when an option is cleared
-                (option as unknown as { label: string; value: string })?.value
+                option as unknown as { label: string; value: string }
               );
             }}
             placeholder={'Type for suggestions...'}
@@ -118,6 +155,9 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
             }
           />
         </div>
+        <button className={playfulButton()} onClick={randomSettings}>
+          Random selection
+        </button>
         <div className="flex flex-col items-center space-y-4">
           <h3>How many images you want to draw?</h3>
           <div className="flex space-x-4">
@@ -150,6 +190,7 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
             ))}
           </div>
         </div>
+
         <button
           className={playfulButton({
             intent: startEnabled ? 'primary' : 'disabled',
@@ -158,7 +199,7 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
           onClick={async () => {
             setStartingDrawingSession(true);
             await router.push(
-              `draw/${selectedOption}?imageCount=${imageCount}&duration=${duration}`
+              `draw/${selectedCategory}?imageCount=${imageCount}&duration=${duration}`
             );
           }}
         >
