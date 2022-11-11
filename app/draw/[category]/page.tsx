@@ -13,10 +13,10 @@ export default async function DrawingSession({
   params,
   searchParams,
 }: {
-  params: { slug: string };
+  params: { category: string };
   searchParams: { numberOfImages: number; duration: number };
 }) {
-  const photos = await getData(searchParams.numberOfImages, params.slug);
+  const photos = await getData(searchParams.numberOfImages, params.category);
 
   return <Frame duration={searchParams.duration} photos={photos} />;
 }
