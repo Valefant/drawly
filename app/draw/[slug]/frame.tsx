@@ -10,7 +10,7 @@ import { Photo } from 'pexels';
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import useWebAnimations from '@wellyshen/use-web-animations';
 import Attribution from '../../../components/attribution';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { playfulButton } from '../../../components/design';
 import { grayscale, printCanvas, roberts, thresholding } from 'lena-ts';
 
@@ -64,7 +64,7 @@ export function Frame({
   duration: number;
   photos: Photo[];
 }) {
-  const documentRef = useRef<Document>(document);
+  const documentRef = useRef<Document | null>(null);
   const audioRef = useRef<HTMLAudioElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
@@ -89,6 +89,10 @@ export function Frame({
       duration: 1000,
     },
   });
+
+  useEffect(() => {
+    documentRef.current = window.document;
+  }, []);
 
   const nextImage = () => {
     goToNextStep();
