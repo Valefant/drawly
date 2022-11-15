@@ -59,6 +59,7 @@ const categoriesToSelectFrom = [
   'tree',
   'vase',
 ];
+const drawingModeOptions = ['reference', 'memory'] as DrawingMode[];
 const numberOfImagesOptions = [5, 10, 15];
 const timerDurationOptions = [1, 3, 5];
 
@@ -101,6 +102,7 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
 
   const randomSettings = () => {
     setSelectedCategoryOption(toOption(random(categoriesToSelectFrom)));
+    setDrawingMode(random(drawingModeOptions));
     setNumberOfImages(random(numberOfImagesOptions));
     setDuration(random(timerDurationOptions));
   };
@@ -153,13 +155,7 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
               setSearchTerm(input);
             }}
             value={selectedCategoryOption}
-            onChange={(option) => {
-              setSelectedCategoryOption(
-                // ugly hack because the option variable is not properly typed making use of the grouped options
-                // optional chaining is used because the on change event is also triggered when an option is cleared
-                option as unknown as { label: string; value: string }
-              );
-            }}
+            onChange={(option) => setSelectedCategoryOption(option)}
             placeholder={'Type for suggestions...'}
             isClearable={true}
             noOptionsMessage={() =>
@@ -167,9 +163,27 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
             }
           />
         </div>
-        <button className={playfulButton()} onClick={randomSettings}>
-          Random selection
-        </button>
+        <div className="flex flex-col items-center space-y-4">
+          <h3>Drawing by</h3>
+          <div className="flex space-x-4">
+            <button
+              className={playfulButton({
+                intent: drawingMode === 'reference' ? 'active' : 'primary',
+              })}
+              onClick={() => setDrawingMode('reference')}
+            >
+              Reference
+            </button>
+            <button
+              className={playfulButton({
+                intent: drawingMode === 'memory' ? 'active' : 'primary',
+              })}
+              onClick={() => setDrawingMode('memory')}
+            >
+              Memory
+            </button>
+          </div>
+        </div>
         <div className="flex flex-col items-center space-y-4">
           <h3>How many images you want to draw?</h3>
           <div className="flex space-x-4">
@@ -202,41 +216,25 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
             ))}
           </div>
         </div>
-        <div className="flex flex-col items-center space-y-4">
-          <h3>Drawing mode</h3>
-          <div className="flex space-x-4">
-            <button
-              className={playfulButton({
-                intent: drawingMode === 'reference' ? 'active' : 'primary',
-              })}
-              onClick={() => setDrawingMode('reference')}
-            >
-              Reference
-            </button>
-            <button
-              className={playfulButton({
-                intent: drawingMode === 'memory' ? 'active' : 'primary',
-              })}
-              onClick={() => setDrawingMode('memory')}
-            >
-              Memory
-            </button>
-          </div>
+        <div className="flex space-x-4">
+          <button className={playfulButton()} onClick={randomSettings}>
+            Random settings
+          </button>
+          <button
+            className={playfulButton({
+              intent: startEnabled ? 'primary' : 'disabled',
+            })}
+            disabled={!startEnabled || startingDrawingSession}
+            onClick={async () => {
+              setStartingDrawingSession(true);
+              await router.push(
+                `draw/${selectedCategory}?numberOfImages=${numberOfImages}&duration=${duration}&drawingMode=${drawingMode}`
+              );
+            }}
+          >
+            Start
+          </button>
         </div>
-        <button
-          className={playfulButton({
-            intent: startEnabled ? 'primary' : 'disabled',
-          })}
-          disabled={!startEnabled || startingDrawingSession}
-          onClick={async () => {
-            setStartingDrawingSession(true);
-            await router.push(
-              `draw/${selectedCategory}?numberOfImages=${numberOfImages}&duration=${duration}&drawingMode=${drawingMode}`
-            );
-          }}
-        >
-          Start
-        </button>
         <a className="underline opacity-50" href="https://www.pexels.com">
           Photos provided by Pexels
         </a>
