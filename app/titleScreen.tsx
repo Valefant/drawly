@@ -144,97 +144,101 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
         {startingDrawingSession && (
           <div className="flex justify-center">Starting drawing session...</div>
         )}
-        <div className="w-[22rem]">
-          <Select
-            name="suggestions"
-            isLoading={suggestionsLoading}
-            options={groupedOptions}
-            className="react-select-container"
-            classNamePrefix="react-select"
-            onInputChange={(input) => {
-              setSearchTerm(input);
-            }}
-            value={selectedCategoryOption}
-            onChange={(option) => setSelectedCategoryOption(option)}
-            placeholder={'Type for suggestions...'}
-            isClearable={true}
-            noOptionsMessage={() =>
-              'We could not find any related categories for your search'
-            }
-          />
-        </div>
-        <div className="flex flex-col items-center space-y-4">
-          <h3>Drawing by</h3>
-          <div className="flex space-x-4">
-            <button
-              className={playfulButton({
-                intent: drawingMode === 'reference' ? 'active' : 'primary',
-              })}
-              onClick={() => setDrawingMode('reference')}
-            >
-              Reference
-            </button>
-            <button
-              className={playfulButton({
-                intent: drawingMode === 'memory' ? 'active' : 'primary',
-              })}
-              onClick={() => setDrawingMode('memory')}
-            >
-              Memory
-            </button>
-          </div>
-        </div>
-        <div className="flex flex-col items-center space-y-4">
-          <h3>How many images you want to draw?</h3>
-          <div className="flex space-x-4">
-            {numberOfImagesOptions.map((value) => (
-              <button
-                key={value}
-                onClick={() => setNumberOfImages(value)}
-                className={playfulButton({
-                  intent: numberOfImages === value ? 'active' : 'primary',
-                })}
-              >
-                {value}
+        {!startingDrawingSession && (
+          <>
+            <div className="w-[22rem]">
+              <Select
+                name="suggestions"
+                isLoading={suggestionsLoading}
+                options={groupedOptions}
+                className="react-select-container"
+                classNamePrefix="react-select"
+                onInputChange={(input) => {
+                  setSearchTerm(input);
+                }}
+                value={selectedCategoryOption}
+                onChange={(option) => setSelectedCategoryOption(option)}
+                placeholder={'Type for suggestions...'}
+                isClearable={true}
+                noOptionsMessage={() =>
+                  'We could not find any related categories for your search'
+                }
+              />
+            </div>
+            <div className="flex flex-col items-center space-y-4">
+              <h3>Drawing by</h3>
+              <div className="flex space-x-4">
+                <button
+                  className={playfulButton({
+                    intent: drawingMode === 'reference' ? 'active' : 'primary',
+                  })}
+                  onClick={() => setDrawingMode('reference')}
+                >
+                  Reference
+                </button>
+                <button
+                  className={playfulButton({
+                    intent: drawingMode === 'memory' ? 'active' : 'primary',
+                  })}
+                  onClick={() => setDrawingMode('memory')}
+                >
+                  Memory
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-col items-center space-y-4">
+              <h3>How many images you want to draw?</h3>
+              <div className="flex space-x-4">
+                {numberOfImagesOptions.map((value) => (
+                  <button
+                    key={value}
+                    onClick={() => setNumberOfImages(value)}
+                    className={playfulButton({
+                      intent: numberOfImages === value ? 'active' : 'primary',
+                    })}
+                  >
+                    {value}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-col items-center space-y-4">
+              <h3>Draw time for each image (in minutes)</h3>
+              <div className="flex space-x-4">
+                {timerDurationOptions.map((value) => (
+                  <button
+                    key={value}
+                    onClick={() => setDuration(value)}
+                    className={playfulButton({
+                      intent: duration === value ? 'active' : 'primary',
+                    })}
+                  >
+                    {value}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="flex space-x-4">
+              <button className={playfulButton()} onClick={randomSettings}>
+                Random settings
               </button>
-            ))}
-          </div>
-        </div>
-        <div className="flex flex-col items-center space-y-4">
-          <h3>Draw time for each image (in minutes)</h3>
-          <div className="flex space-x-4">
-            {timerDurationOptions.map((value) => (
               <button
-                key={value}
-                onClick={() => setDuration(value)}
                 className={playfulButton({
-                  intent: duration === value ? 'active' : 'primary',
+                  intent: startEnabled ? 'primary' : 'disabled',
                 })}
+                disabled={!startEnabled || startingDrawingSession}
+                onClick={async () => {
+                  setStartingDrawingSession(true);
+                  await router.push(
+                    `draw/${selectedCategory}?numberOfImages=${numberOfImages}&duration=${duration}&drawingMode=${drawingMode}`
+                  );
+                }}
               >
-                {value}
+                Start
               </button>
-            ))}
-          </div>
-        </div>
-        <div className="flex space-x-4">
-          <button className={playfulButton()} onClick={randomSettings}>
-            Random settings
-          </button>
-          <button
-            className={playfulButton({
-              intent: startEnabled ? 'primary' : 'disabled',
-            })}
-            disabled={!startEnabled || startingDrawingSession}
-            onClick={async () => {
-              setStartingDrawingSession(true);
-              await router.push(
-                `draw/${selectedCategory}?numberOfImages=${numberOfImages}&duration=${duration}&drawingMode=${drawingMode}`
-              );
-            }}
-          >
-            Start
-          </button>
-        </div>
+            </div>
+          </>
+        )}
         <a className="underline opacity-50" href="https://www.pexels.com">
           Photos provided by Pexels
         </a>
