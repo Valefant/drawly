@@ -11,3 +11,7 @@ export type ImageInfo = {
   alt: string;
   author: Author;
 };
+
+export type DrawingMode = 'reference' | 'memory';
+
+export type TimerMode = 'memorize' | 'drawing';

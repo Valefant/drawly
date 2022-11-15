@@ -12,7 +12,7 @@ import Attribution from '../../components/attribution';
 import { useEffect, useRef, useState } from 'react';
 import { playfulButton } from '../../components/design';
 import { grayscale, printCanvas, roberts, thresholding } from 'lena-ts';
-import { ImageInfo } from '../../../lib/domainTypes';
+import { DrawingMode, ImageInfo, TimerMode } from '../../../lib/domainTypes';
 import { useRouter } from 'next/navigation';
 
 function useRotation() {
@@ -25,6 +25,7 @@ function useRotation() {
 
 const filters = ['gray', 'edge', 'shadows'] as const;
 type Filter = typeof filters[number];
+type Trigger = 'manual' | 'nextImage';
 const filterMapping: { [key in Filter]: (pixels: ImageData) => ImageData } = {
   gray: grayscale,
   edge: roberts,
@@ -33,7 +34,7 @@ const filterMapping: { [key in Filter]: (pixels: ImageData) => ImageData } = {
 
 interface FilterSelectionProps {
   activeFilter: Filter | null;
-  onFilterChange: (filter: Filter | null) => void;
+  onFilterChange: (filter: Filter | null, trigger: Trigger) => void;
 }
 
 function FilterSelection({
@@ -49,7 +50,7 @@ function FilterSelection({
             intent: activeFilter === filter ? 'active' : 'primary',
           })}
           key={filter}
-          onClick={() => onFilterChange(filter)}
+          onClick={() => onFilterChange(filter, 'manual')}
         >
           {filter}
         </button>
@@ -61,9 +62,11 @@ function FilterSelection({
 export function Frame({
   duration,
   images,
+  drawingMode,
 }: {
   duration: number;
   images: ImageInfo[];
+  drawingMode: DrawingMode;
 }) {
   const router = useRouter();
   const documentRef = useRef<Document | null>(null);
@@ -83,6 +86,9 @@ export function Frame({
   const timerPausedByInactiveTab = useRef(false);
   const { value: flipped, toggle: toggleFlip } = useBoolean(false);
   const { rotation, rotate } = useRotation();
+  const [timerMode, setTimerMode] = useState<TimerMode>(
+    drawingMode === 'memory' ? 'memorize' : 'drawing'
+  );
   // step starts by 1
   const index = currentStep - 1;
   const imageInfo = images[index];
@@ -99,17 +105,24 @@ export function Frame({
   }, []);
 
   const nextImage = async () => {
+    if (timerMode === 'memorize') {
+      setTimerMode('drawing');
+      return;
+    }
+
+    if (drawingMode === 'memory' && timerMode === 'drawing') {
+      setTimerMode('memorize');
+    }
+
     if (!canGoToNextStep) {
       await router.push('/');
       return;
     }
     goToNextStep();
-    // todo: active filter should be applied to the next image as well
-    setActiveFilter(null);
     getAnimation()?.play();
   };
 
-  const changeFilterHandler = (filter: Filter | null) => {
+  const changeFilterHandler = (filter: Filter | null, trigger: Trigger) => {
     if (imgRef.current === null || canvasRef.current === null) {
       return;
     }
@@ -123,7 +136,7 @@ export function Frame({
     const filterAppliedImageData = filterMapping[filter](imageData);
     printCanvas(canvasRef.current, filterAppliedImageData);
 
-    if (filter === activeFilter) {
+    if (filter === activeFilter && trigger == 'manual') {
       setActiveFilter(null);
     } else {
       setActiveFilter(filter);
@@ -174,7 +187,7 @@ export function Frame({
     }
 
     if (e.key === '1' || e.key === '2' || e.key === '3') {
-      changeFilterHandler(filters[Number(e.key) - 1]);
+      changeFilterHandler(filters[Number(e.key) - 1], 'manual');
     }
   });
 
@@ -185,6 +198,10 @@ export function Frame({
         style={{
           transition: 'transform 0.3s',
           transform: `rotate(${rotation}deg) scaleX(${flipped ? -1 : 1})`,
+          visibility:
+            timerMode === 'memorize' || drawingMode === 'reference'
+              ? 'visible'
+              : 'hidden',
         }}
       >
         <div className="absolute inset-0 z-20 bg-white opacity-0" ref={ref} />
@@ -194,6 +211,11 @@ export function Frame({
           alt={imageInfo.alt as string}
           src={imageInfo.src.large}
           className={activeFilter ? 'hidden' : ''}
+          onLoad={() => {
+            if (activeFilter) {
+              changeFilterHandler(activeFilter, 'nextImage');
+            }
+          }}
         />
         <canvas
           style={{ width: '100%', height: '100%' }}
@@ -223,9 +245,9 @@ export function Frame({
         <audio ref={audioRef} src="/sound.wav"></audio>
         <div className="dark:invert">
           <CountdownCircleTimer
-            duration={duration * 60}
+            duration={timerMode === 'memorize' ? 10 : duration * 60}
             isPlaying={isPlaying}
-            key={currentStep}
+            key={`${currentStep}:${timerMode}`}
             colors={'#000000'}
             onComplete={() => {
               audioRef.current?.play();

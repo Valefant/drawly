@@ -1,8 +1,8 @@
 import { Photo } from 'pexels';
 import { getPhotos } from '../../../lib/serverApi';
 import { Frame } from './frame';
-import { redis } from '../../../lib/init';
-import { ImageInfo } from '../../../lib/domainTypes';
+import { redis, supabase } from '../../../lib/init';
+import { DrawingMode, ImageInfo } from '../../../lib/domainTypes';
 
 async function getData(
   numberOfImages: number,
@@ -16,8 +16,14 @@ export default async function DrawingSession({
   searchParams,
 }: {
   params: { category: string };
-  searchParams: { numberOfImages: number; duration: number };
+  searchParams: {
+    numberOfImages: number;
+    duration: number;
+    drawingMode: DrawingMode;
+  };
 }) {
+  const savedCategoryPromise = saveCategoryToDatabase(params.category);
+
   let images: ImageInfo[];
 
   try {
@@ -36,7 +42,20 @@ export default async function DrawingSession({
     );
   }
 
-  return <Frame duration={searchParams.duration} images={images} />;
+  await savedCategoryPromise;
+
+  return (
+    <Frame
+      duration={searchParams.duration}
+      images={images}
+      drawingMode={searchParams.drawingMode}
+    />
+  );
+}
+
+async function saveCategoryToDatabase(category: string): Promise<void> {
+  await supabase.from('selected_categories').insert([{ category }]);
+  return Promise.resolve();
 }
 
 function pexelsMapper(photos: Photo[]): ImageInfo[] {

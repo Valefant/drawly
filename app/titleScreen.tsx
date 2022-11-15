@@ -11,6 +11,7 @@ import MoonIcon from '@heroicons/react/24/solid/MoonIcon';
 import Select from 'react-select';
 import { playfulButton } from './components/design';
 import pkg from '../package.json';
+import { DrawingMode } from '../lib/domainTypes';
 
 function useSuggestions(searchTerm: string): {
   suggestions: string[];
@@ -58,6 +59,7 @@ const categoriesToSelectFrom = [
   'tree',
   'vase',
 ];
+const drawingModeOptions = ['reference', 'memory'] as DrawingMode[];
 const numberOfImagesOptions = [5, 10, 15];
 const timerDurationOptions = [1, 3, 5];
 
@@ -87,6 +89,7 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
   const [startingDrawingSession, setStartingDrawingSession] = useState(false);
   const [numberOfImages, setNumberOfImages] = useState<number | null>(null);
   const [duration, setDuration] = useState<number | null>(null);
+  const [drawingMode, setDrawingMode] = useState<DrawingMode>('reference');
   const startEnabled =
     selectedCategory && numberOfImages != null && duration != null;
 
@@ -99,12 +102,13 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
 
   const randomSettings = () => {
     setSelectedCategoryOption(toOption(random(categoriesToSelectFrom)));
+    setDrawingMode(random(drawingModeOptions));
     setNumberOfImages(random(numberOfImagesOptions));
     setDuration(random(timerDurationOptions));
   };
 
   return (
-    <div className="dark:bg-neutral-800 dark:text-white relative h-screen bg-gray-100">
+    <div className="dark:bg-neutral-800 dark:text-white md:h-screen relative bg-gray-100">
       <Image
         src={bgImage}
         alt="background"
@@ -140,81 +144,101 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
         {startingDrawingSession && (
           <div className="flex justify-center">Starting drawing session...</div>
         )}
-        <div className="w-[22rem]">
-          <Select
-            name="suggestions"
-            isLoading={suggestionsLoading}
-            options={groupedOptions}
-            className="react-select-container"
-            classNamePrefix="react-select"
-            onInputChange={(input) => {
-              setSearchTerm(input);
-            }}
-            value={selectedCategoryOption}
-            onChange={(option) => {
-              setSelectedCategoryOption(
-                // ugly hack because the option variable is not properly typed making use of the grouped options
-                // optional chaining is used because the on change event is also triggered when an option is cleared
-                option as unknown as { label: string; value: string }
-              );
-            }}
-            placeholder={'Type for suggestions...'}
-            isClearable={true}
-            noOptionsMessage={() =>
-              'We could not find any related categories for your search'
-            }
-          />
-        </div>
-        <button className={playfulButton()} onClick={randomSettings}>
-          Random selection
-        </button>
-        <div className="flex flex-col items-center space-y-4">
-          <h3>How many images you want to draw?</h3>
-          <div className="flex space-x-4">
-            {numberOfImagesOptions.map((value) => (
-              <button
-                key={value}
-                onClick={() => setNumberOfImages(value)}
-                className={playfulButton({
-                  intent: numberOfImages === value ? 'active' : 'primary',
-                })}
-              >
-                {value}
+        {!startingDrawingSession && (
+          <>
+            <div className="w-[22rem]">
+              <Select
+                name="suggestions"
+                isLoading={suggestionsLoading}
+                options={groupedOptions}
+                className="react-select-container"
+                classNamePrefix="react-select"
+                onInputChange={(input) => {
+                  setSearchTerm(input);
+                }}
+                value={selectedCategoryOption}
+                onChange={(option) => setSelectedCategoryOption(option)}
+                placeholder={'Type for suggestions...'}
+                isClearable={true}
+                noOptionsMessage={() =>
+                  'We could not find any related categories for your search'
+                }
+              />
+            </div>
+            <div className="flex flex-col items-center space-y-4">
+              <h3>Drawing by</h3>
+              <div className="flex space-x-4">
+                <button
+                  className={playfulButton({
+                    intent: drawingMode === 'reference' ? 'active' : 'primary',
+                  })}
+                  onClick={() => setDrawingMode('reference')}
+                >
+                  Reference
+                </button>
+                <button
+                  className={playfulButton({
+                    intent: drawingMode === 'memory' ? 'active' : 'primary',
+                  })}
+                  onClick={() => setDrawingMode('memory')}
+                >
+                  Memory
+                </button>
+              </div>
+            </div>
+            <div className="flex flex-col items-center space-y-4">
+              <h3>How many images you want to draw?</h3>
+              <div className="flex space-x-4">
+                {numberOfImagesOptions.map((value) => (
+                  <button
+                    key={value}
+                    onClick={() => setNumberOfImages(value)}
+                    className={playfulButton({
+                      intent: numberOfImages === value ? 'active' : 'primary',
+                    })}
+                  >
+                    {value}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="flex flex-col items-center space-y-4">
+              <h3>Draw time for each image (in minutes)</h3>
+              <div className="flex space-x-4">
+                {timerDurationOptions.map((value) => (
+                  <button
+                    key={value}
+                    onClick={() => setDuration(value)}
+                    className={playfulButton({
+                      intent: duration === value ? 'active' : 'primary',
+                    })}
+                  >
+                    {value}
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="flex space-x-4">
+              <button className={playfulButton()} onClick={randomSettings}>
+                Random settings
               </button>
-            ))}
-          </div>
-        </div>
-        <div className="flex flex-col items-center space-y-4">
-          <h3>Draw time for each image (in minutes)</h3>
-          <div className="flex space-x-4">
-            {timerDurationOptions.map((value) => (
               <button
-                key={value}
-                onClick={() => setDuration(value)}
                 className={playfulButton({
-                  intent: duration === value ? 'active' : 'primary',
+                  intent: startEnabled ? 'primary' : 'disabled',
                 })}
+                disabled={!startEnabled || startingDrawingSession}
+                onClick={async () => {
+                  setStartingDrawingSession(true);
+                  await router.push(
+                    `draw/${selectedCategory}?numberOfImages=${numberOfImages}&duration=${duration}&drawingMode=${drawingMode}`
+                  );
+                }}
               >
-                {value}
+                Start
               </button>
-            ))}
-          </div>
-        </div>
-
-        <button
-          className={playfulButton({
-            intent: startEnabled ? 'primary' : 'disabled',
-          })}
-          disabled={!startEnabled || startingDrawingSession}
-          onClick={async () => {
-            setStartingDrawingSession(true);
-            await router.push(
-              `draw/${selectedCategory}?numberOfImages=${numberOfImages}&duration=${duration}`
-            );
-          }}
-        >
-          Start
-        </button>
+            </div>
+          </>
+        )}
         <a className="underline opacity-50" href="https://www.pexels.com">
           Photos provided by Pexels
         </a>
