@@ -1,6 +1,6 @@
 # drawly
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2Fvercel%2Fnext.js%2Ftree%2Fcanary%2Fexamples%2Fhello-world&env=PEXELS_API_KEY)
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FValefant%2Fdrawly&env=PEXELS_API_KEY,UPSTASH_REDIS_REST_URL,UPSTASH_REDIS_REST_TOKEN,SUPABASE_URL,SUPABASE_KEY)
 
 Improve your drawing by practicing your skill daily with the help of drawly!
 
@@ -33,7 +33,11 @@ Copy the provided example environment file
 cp .env.example .env
 ```
 
-`PEXELS_API_KEY` needs to be set for the images to load.
+Variables
+
+- `PEXELS_API_KEY` is used for loading images
+- `UPSTASH_REDIS_*` is used for caching purposes
+- `SUPABASE_*` is used as database
 
 ## Image Providers
 
@@ -45,6 +49,18 @@ from.
 #### Pexels
 
 Images provided by [Pexels](https://www.pexels.com)
+
+## Caching
+
+### Upstash Redis
+
+To avoid requesting the pexels api too much we are caching the selected categories for a day.
+
+## Database
+
+### Supabase
+
+Supabase is used as a primary datastore.
 
 ## Misc
 

@@ -15,6 +15,7 @@
   "dependencies": {
     "@heroicons/react": "^2.0.13",
     "@next/font": "^13.0.3",
+    "@supabase/supabase-js": "^2.1.0",
     "@upstash/redis": "^1.16.0",
     "@vercel/analytics": "^0.1.5",
     "@wellyshen/use-web-animations": "^0.9.1",
