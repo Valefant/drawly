@@ -1,6 +1,6 @@
 {
   "name": "drawly",
-  "version": "0.1",
+  "version": "0.2",
   "description": "An app for daily drawing practice",
   "private": true,
   "scripts": {
