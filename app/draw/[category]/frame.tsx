@@ -25,6 +25,7 @@ function useRotation() {
 
 const filters = ['gray', 'edge', 'shadows'] as const;
 type Filter = typeof filters[number];
+type Trigger = 'manual' | 'nextImage';
 const filterMapping: { [key in Filter]: (pixels: ImageData) => ImageData } = {
   gray: grayscale,
   edge: roberts,
@@ -33,7 +34,7 @@ const filterMapping: { [key in Filter]: (pixels: ImageData) => ImageData } = {
 
 interface FilterSelectionProps {
   activeFilter: Filter | null;
-  onFilterChange: (filter: Filter | null) => void;
+  onFilterChange: (filter: Filter | null, trigger: Trigger) => void;
 }
 
 function FilterSelection({
@@ -49,7 +50,7 @@ function FilterSelection({
             intent: activeFilter === filter ? 'active' : 'primary',
           })}
           key={filter}
-          onClick={() => onFilterChange(filter)}
+          onClick={() => onFilterChange(filter, 'manual')}
         >
           {filter}
         </button>
@@ -118,12 +119,10 @@ export function Frame({
       return;
     }
     goToNextStep();
-    // todo: active filter should be applied to the next image as well
-    setActiveFilter(null);
     getAnimation()?.play();
   };
 
-  const changeFilterHandler = (filter: Filter | null) => {
+  const changeFilterHandler = (filter: Filter | null, trigger: Trigger) => {
     if (imgRef.current === null || canvasRef.current === null) {
       return;
     }
@@ -137,7 +136,7 @@ export function Frame({
     const filterAppliedImageData = filterMapping[filter](imageData);
     printCanvas(canvasRef.current, filterAppliedImageData);
 
-    if (filter === activeFilter) {
+    if (filter === activeFilter && trigger == 'manual') {
       setActiveFilter(null);
     } else {
       setActiveFilter(filter);
@@ -188,7 +187,7 @@ export function Frame({
     }
 
     if (e.key === '1' || e.key === '2' || e.key === '3') {
-      changeFilterHandler(filters[Number(e.key) - 1]);
+      changeFilterHandler(filters[Number(e.key) - 1], 'manual');
     }
   });
 
@@ -212,6 +211,11 @@ export function Frame({
           alt={imageInfo.alt as string}
           src={imageInfo.src.large}
           className={activeFilter ? 'hidden' : ''}
+          onLoad={() => {
+            if (activeFilter) {
+              changeFilterHandler(activeFilter, 'nextImage');
+            }
+          }}
         />
         <canvas
           style={{ width: '100%', height: '100%' }}
