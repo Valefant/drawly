@@ -1,9 +1,9 @@
 import { pexelsApi } from './init';
 import { PhotosWithTotalResults } from 'pexels';
 
-export async function getPhotos(imageCount: number, category: string) {
+export async function getPhotos(numberOfImages: number, category: string) {
   const response = (await pexelsApi.photos.search({
-    per_page: imageCount,
+    per_page: numberOfImages,
     query: category as string,
   })) as PhotosWithTotalResults;
 

@@ -17,39 +17,36 @@ export default async function DrawingSession({
 }: {
   params: { category: string };
   searchParams: {
-    numberOfImages: number;
-    duration: number;
+    numberOfImages: string;
+    duration: string;
     drawingMode: DrawingMode;
+    image: string;
   };
 }) {
-  const savedCategoryPromise = saveCategoryToDatabase(params.category);
+  const category = params.category;
+  const savedCategoryPromise = saveCategoryToDatabase(category);
+  const numberOfImages = Number(searchParams.numberOfImages);
+  const duration = Number(searchParams.duration);
+  const drawingMode = searchParams.drawingMode;
 
   let images: ImageInfo[];
 
   try {
-    if (await dataAvailable(params.category)) {
-      images = await getDataFromCache(params.category);
+    if (await dataAvailable(category)) {
+      images = await getDataFromCache(category);
     } else {
-      images = pexelsMapper(
-        await getData(searchParams.numberOfImages, params.category)
-      );
-      await cacheCategory(params.category, images);
+      images = pexelsMapper(await getData(numberOfImages, category));
+      await cacheCategory(category, images);
     }
   } catch (e) {
     // if we hit rate limits with redis, we fall back to reading from the pexels api
-    images = pexelsMapper(
-      await getData(searchParams.numberOfImages, params.category)
-    );
+    images = pexelsMapper(await getData(numberOfImages, category));
   }
 
   await savedCategoryPromise;
 
   return (
-    <Frame
-      duration={searchParams.duration}
-      images={images}
-      drawingMode={searchParams.drawingMode}
-    />
+    <Frame duration={duration} images={images} drawingMode={drawingMode} />
   );
 }
 
