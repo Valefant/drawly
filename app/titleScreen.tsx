@@ -108,7 +108,7 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
   };
 
   return (
-    <div className="dark:bg-neutral-800 dark:text-white md:h-screen relative bg-gray-100">
+    <div className="dark:bg-neutral-800 dark:text-white relative bg-gray-100">
       <Image
         src={bgImage}
         alt="background"
@@ -119,27 +119,35 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
         quality={100}
       />
 
-      <div className="md:space-y-8 relative flex flex-col items-center justify-center h-full space-y-6">
-        <div className="flex space-x-4">
-          <button
-            title="Light mode"
-            onClick={() => {
-              saveThemePreference('light');
-              document?.querySelector('html')?.classList.remove('dark');
-            }}
-          >
-            <SunIcon className="aspect-square dark:text-white w-4 text-black" />
-          </button>
-          <button
-            title="Dark mode"
-            onClick={() => {
-              saveThemePreference('dark');
-              document?.querySelector('html')?.classList.add('dark');
-            }}
-          >
-            <MoonIcon className="aspect-square dark:text-white w-4 text-black" />
-          </button>
-        </div>
+      <div className="relative z-10 flex items-center justify-end h-8 p-4 space-x-2">
+        <button
+          title="Light mode"
+          onClick={() => {
+            saveThemePreference('light');
+            document?.querySelector('html')?.classList.remove('dark');
+          }}
+          className="dark:border-white border-[1px] p-1 border-black rounded-full"
+        >
+          <SunIcon className="aspect-square dark:text-white w-4 text-black" />
+        </button>
+        <button
+          title="Dark mode"
+          onClick={() => {
+            saveThemePreference('dark');
+            document?.querySelector('html')?.classList.add('dark');
+          }}
+          className="dark:border-white p-1 border-[1px] border-black rounded-full"
+        >
+          <MoonIcon className="aspect-square dark:text-white w-4 text-black" />
+        </button>
+      </div>
+
+      <div
+        className="md:space-y-8 relative flex flex-col items-center justify-center space-y-6"
+        style={{
+          height: 'calc(100vh - 2rem)',
+        }}
+      >
         <h1 className="text-5xl font-bold">Drawly</h1>
         {startingDrawingSession && (
           <div className="flex justify-center">Starting drawing session...</div>
