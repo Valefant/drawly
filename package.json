@@ -14,14 +14,14 @@
   },
   "dependencies": {
     "@heroicons/react": "^2.0.13",
-    "@next/font": "^13.0.3",
+    "@next/font": "^13.0.4",
     "@supabase/supabase-js": "^2.1.0",
-    "@upstash/redis": "^1.16.0",
+    "@upstash/redis": "^1.16.1",
     "@vercel/analytics": "^0.1.5",
     "@wellyshen/use-web-animations": "^0.9.1",
     "class-variance-authority": "^0.3.0",
     "lena-ts": "^0.1.21",
-    "next": "13.0.3",
+    "next": "13.0.4",
     "next-cookie": "^2.8.0",
     "pexels": "^1.4.0",
     "react": "18.2.0",
@@ -39,14 +39,14 @@
     "@typescript-eslint/parser": "^5.43.0",
     "autoprefixer": "^10.4.13",
     "eslint": "8.27.0",
-    "eslint-config-next": "13.0.3",
+    "eslint-config-next": "13.0.4",
     "eslint-config-prettier": "^8.5.0",
     "eslint-plugin-prettier": "^4.2.1",
     "postcss": "^8.4.19",
     "prettier": "^2.7.1",
     "prettier-plugin-tailwind-css": "^1.5.0",
-    "supabase": "^1.13.0",
+    "supabase": "^1.14.3",
     "tailwindcss": "^3.2.4",
-    "typescript": "4.8.4"
+    "typescript": "4.9.3"
   }
 }
