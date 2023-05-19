@@ -14,6 +14,8 @@ export const loadSuggestions = async (input: string) => {
 export type Theme = 'light' | 'dark';
 
 export async function setTheme(theme: Theme) {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
   cookies().set('theme', theme);
 }
 
