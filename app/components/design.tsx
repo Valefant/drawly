@@ -11,7 +11,7 @@ export const playfulButton = cva(
         disabled: 'opacity-25',
       },
       size: {
-        small: 'text-sm py-1 px-2',
+        small: 'text-sm py-1 px-2 border-[2px]',
         medium: 'text-base py-2 px-4',
       },
     },
