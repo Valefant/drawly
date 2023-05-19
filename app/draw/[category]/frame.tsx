@@ -70,7 +70,7 @@ export function Frame({
 }) {
   const router = useRouter();
   const documentRef = useRef<Document | null>(null);
-  const audioRef = useRef<HTMLAudioElement>(null);
+  const audioBellSndRef = useRef<HTMLAudioElement>(null);
   const imgRef = useRef<HTMLImageElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [currentStep, { goToNextStep, canGoToNextStep }] = useStep(
@@ -108,6 +108,8 @@ export function Frame({
     if (timerMode === 'memorize') {
       setTimerMode('drawing');
       return;
+    } else {
+      audioBellSndRef.current?.play();
     }
 
     if (drawingMode === 'memory' && timerMode === 'drawing') {
@@ -242,7 +244,7 @@ export function Frame({
             {isPlaying ? <PauseIcon width="24" /> : <PlayIcon width="24" />}
           </button>
         </div>
-        <audio ref={audioRef} src="/sound.wav"></audio>
+        <audio ref={audioBellSndRef} src="/sound.wav"></audio>
         <div className="dark:invert">
           <CountdownCircleTimer
             duration={
