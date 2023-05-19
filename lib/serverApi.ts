@@ -8,7 +8,7 @@ export async function getPhotos(numberOfImages: number, category: string) {
   })) as PhotosWithTotalResults;
 
   if (response.photos.length === 0) {
-    throw Error(`No images exist for the category: ${category}`);
+    throw Error(`No images exist for this category: ${category}`);
   }
 
   return response.photos;

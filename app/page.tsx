@@ -1,5 +1,6 @@
 import TitleScreen from './titleScreen';
 import { supabase } from '../lib/init';
+import { lookupTheme } from './actions';
 
 async function getData(): Promise<string[]> {
   const response = await supabase
@@ -12,6 +13,7 @@ async function getData(): Promise<string[]> {
 
 export default async function Home() {
   const categories = await getData();
+  const theme = await lookupTheme();
 
-  return <TitleScreen categories={categories} />;
+  return <TitleScreen categories={categories} theme={theme} />;
 }

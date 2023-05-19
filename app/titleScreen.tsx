@@ -1,9 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
-import { fetchSuggestions, saveThemePreference } from '../lib/clientApi';
+import { useState, useTransition } from 'react';
 import { useRouter } from 'next/navigation';
-import { useDebounce } from 'usehooks-ts';
 import Image from 'next/image';
 import bgImage from '../public/tile_background.png';
 import SunIcon from '@heroicons/react/24/solid/SunIcon';
@@ -12,27 +10,7 @@ import Select from 'react-select';
 import { playfulButton } from './components/design';
 import pkg from '../package.json';
 import { DrawingMode } from '../lib/domainTypes';
-
-function useSuggestions(searchTerm: string): {
-  suggestions: string[];
-  suggestionsLoading: boolean;
-} {
-  const [suggestions, setSuggestions] = useState<string[]>([]);
-  const [isLoading, setIsLoading] = useState<boolean>(false);
-
-  useEffect(() => {
-    if (searchTerm === '') {
-      return;
-    }
-
-    setIsLoading(true);
-    fetchSuggestions(searchTerm)
-      .then((suggestions) => setSuggestions(suggestions))
-      .finally(() => setIsLoading(false));
-  }, [searchTerm]);
-
-  return { suggestions, suggestionsLoading: isLoading };
-}
+import { loadSuggestions, setTheme, Theme } from './actions';
 
 const categoriesToSelectFrom = [
   'animal',
@@ -71,7 +49,13 @@ function toOption<T>(value: T): { label: T; value: T } {
   return { label: value, value };
 }
 
-export default function TitleScreen({ categories }: { categories: string[] }) {
+export default function TitleScreen({
+  categories,
+  theme,
+}: {
+  categories: string[];
+  theme: Theme;
+}) {
   const router = useRouter();
   const version = pkg.version;
   const [searchTerm, setSearchTerm] = useState('');
@@ -80,9 +64,7 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
     value: string;
   } | null>(null);
   const selectedCategory = selectedCategoryOption?.value;
-  const debouncedSearchTerm = useDebounce(searchTerm, 250);
-  const { suggestions, suggestionsLoading } =
-    useSuggestions(debouncedSearchTerm);
+  const [suggestions, setSuggestions] = useState<string[]>([]);
   const suggestionOptions = (searchTerm === '' ? categories : suggestions).map(
     (e) => ({ label: e, value: e })
   );
@@ -106,6 +88,9 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
     setNumberOfImages(random(numberOfImagesOptions));
     setDuration(random(timerDurationOptions));
   };
+
+  const [suggestionsLoading, startSuggestionsTransition] = useTransition();
+  const [, startThemeTransition] = useTransition();
 
   return (
     <div className="dark:bg-neutral-800 dark:text-white bg-gray-100">
@@ -135,6 +120,15 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
                 classNamePrefix="react-select"
                 onInputChange={(input) => {
                   setSearchTerm(input);
+
+                  if (input === '') {
+                    return;
+                  }
+
+                  startSuggestionsTransition(async () => {
+                    const suggestions = await loadSuggestions(input);
+                    setSuggestions(suggestions);
+                  });
                 }}
                 value={selectedCategoryOption}
                 onChange={(option) => setSelectedCategoryOption(option)}
@@ -223,34 +217,36 @@ export default function TitleScreen({ categories }: { categories: string[] }) {
           Photos provided by Pexels
         </a>
 
-        <div className="space-x-2">
-          <button
-            title="Light mode"
-            onClick={() => {
-              saveThemePreference('light');
-              document?.querySelector('html')?.classList.remove('dark');
-            }}
-            className={playfulButton({
-              intent: 'primary',
-              size: 'small',
-            })}
-          >
-            <SunIcon className="aspect-square dark:group-hover:text-black group-hover:text-white w-4" />
-          </button>
-          <button
-            title="Dark mode"
-            onClick={() => {
-              saveThemePreference('dark');
-              document?.querySelector('html')?.classList.add('dark');
-            }}
-            className={playfulButton({
-              intent: 'primary',
-              size: 'small',
-            })}
-          >
-            <MoonIcon className="aspect-square dark:group-hover:text-black group-hover:text-white w-4" />
-          </button>
-        </div>
+        {!startingDrawingSession && (
+          <div className="space-x-2">
+            <button
+              title="Light mode"
+              onClick={() => {
+                startThemeTransition(() => setTheme('light'));
+                document?.querySelector('html')?.classList?.remove('dark');
+              }}
+              className={playfulButton({
+                intent: theme === 'light' ? 'active' : 'primary',
+                size: 'small',
+              })}
+            >
+              <SunIcon className="aspect-square dark:group-hover:text-black group-hover:text-white w-4" />
+            </button>
+            <button
+              title="Dark mode"
+              onClick={() => {
+                startThemeTransition(() => setTheme('dark'));
+                document?.querySelector('html')?.classList?.add('dark');
+              }}
+              className={playfulButton({
+                intent: theme === 'dark' ? 'active' : 'primary',
+                size: 'small',
+              })}
+            >
+              <MoonIcon className="aspect-square dark:group-hover:text-black group-hover:text-white w-4" />
+            </button>
+          </div>
+        )}
 
         <div className="opacity-25">ver. {version}</div>
       </div>
