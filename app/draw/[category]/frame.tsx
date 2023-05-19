@@ -24,7 +24,7 @@ function useRotation() {
 }
 
 const filters = ['gray', 'edge', 'shadows'] as const;
-type Filter = typeof filters[number];
+type Filter = (typeof filters)[number];
 type Trigger = 'manual' | 'nextImage';
 const filterMapping: { [key in Filter]: (pixels: ImageData) => ImageData } = {
   gray: grayscale,
@@ -245,12 +245,15 @@ export function Frame({
         <audio ref={audioRef} src="/sound.wav"></audio>
         <div className="dark:invert">
           <CountdownCircleTimer
-            duration={timerMode === 'memorize' ? 10 : duration * 60}
+            duration={
+              timerMode === 'memorize'
+                ? Math.max(10, 5 * duration)
+                : duration * 60
+            }
             isPlaying={isPlaying}
             key={`${currentStep}:${timerMode}`}
             colors={'#000000'}
             onComplete={() => {
-              audioRef.current?.play();
               nextImage();
             }}
           >
@@ -291,9 +294,7 @@ export function Frame({
         <div className="space-y-2">
           <button
             className={`flex ${playfulButton()}`}
-            onClick={() => {
-              nextImage();
-            }}
+            onClick={nextImage}
             title="Next (enter)"
           >
             <span className="text-2xl">Next</span>
