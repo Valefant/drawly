@@ -21,10 +21,6 @@ yarn dev
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-### appDir
-
-This project makes use of the beta features introduced in Next 13.
-
 ### Env file
 
 Copy the provided example environment file

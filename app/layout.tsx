@@ -1,5 +1,5 @@
 import './globals.css';
-import { Gloria_Hallelujah } from '@next/font/google';
+import { Gloria_Hallelujah } from 'next/font/google';
 import pkg from '../package.json';
 import { cookies } from 'next/headers';
 import { cx } from 'class-variance-authority';
