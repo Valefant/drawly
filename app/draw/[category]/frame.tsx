@@ -109,7 +109,7 @@ export function Frame({
       setTimerMode('drawing');
       return;
     } else {
-      audioBellSndRef.current?.play();
+      await audioBellSndRef.current?.play();
     }
 
     if (drawingMode === 'memory' && timerMode === 'drawing') {
@@ -117,7 +117,7 @@ export function Frame({
     }
 
     if (!canGoToNextStep) {
-      await router.push('/');
+      router.push('/');
       return;
     }
     goToNextStep();
@@ -164,7 +164,7 @@ export function Frame({
     documentRef
   );
 
-  useEventListener('keydown', (e) => {
+  useEventListener('keydown', async (e) => {
     const key = e.code;
 
     if (key === 'KeyP') {
@@ -172,7 +172,7 @@ export function Frame({
     }
 
     if (key === 'Enter' || key === 'NumpadEnter') {
-      nextImage();
+      await nextImage();
 
       // when paused, start the timer again when showing the next image
       if (!isPlaying) {
@@ -256,7 +256,7 @@ export function Frame({
             key={`${currentStep}:${timerMode}`}
             colors={'#000000'}
             onComplete={() => {
-              nextImage();
+              nextImage().then((r) => r);
             }}
           >
             {({ remainingTime }) => (

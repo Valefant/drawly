@@ -203,7 +203,7 @@ export default function TitleScreen({
                 disabled={!startEnabled || startingDrawingSession}
                 onClick={async () => {
                   setStartingDrawingSession(true);
-                  await router.push(
+                  router.push(
                     `draw/${selectedCategory}?numberOfImages=${numberOfImages}&duration=${duration}&drawingMode=${drawingMode}`
                   );
                 }}
