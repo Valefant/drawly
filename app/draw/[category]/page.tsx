@@ -68,7 +68,7 @@ function pexelsMapper(photos: Photo[]): ImageInfo[] {
           name: photo.photographer,
           profileUrl: photo.photographer_url,
         },
-      } as ImageInfo)
+      }) as ImageInfo
   );
 }
 
